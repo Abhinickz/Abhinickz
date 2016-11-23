@@ -44,7 +44,7 @@ fi
 # fi
 
 
-
+#Somthing related to bash commands history, May be ;) !!!
 HISTSIZE=10000
 HISTFILESIZE=200000
 
