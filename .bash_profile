@@ -69,7 +69,7 @@ alias open='cygstart'
 # Aliases for common directories:
 alias work='cd /cygdrive/c/Abhasker/Work'
 alias c='cd /cygdrive/c/'
-alias download='cd /cygdrive/c/Users/50007746/Downloads/'
+alias download='cd /cygdrive/c/Users/Abhasker/Downloads/'
 cd /cygdrive/c/Abhasker/Work
 alias bug='cd /cygdrive/c/Abhasker/Work; perl ../Script\ Files/make_wr_sql_folder.pl'
 alias s='echo /cygdrive/c/Abhasker/xls_Info.txt | xargs grep -in'
@@ -77,20 +77,8 @@ alias ws='echo /cygdrive/c/Abhasker/WorkFlow.txt | xargs grep -in'
 alias workflow='function _workflow(){ number=$1; add=10; echo -e "\t\t\t\t\t\tWorkFlow.txt\n"; cat -n /cygdrive/c/Abhasker/WorkFlow.txt | head -$(expr $number + $add;) | tail -21;};_workflow'
 alias xls='function _xls(){ number=$1; add=10; echo -e "\t\t\t\t\t\txls_Info.txt\n"; cat -n /cygdrive/c/Abhasker/xls_Info.txt | head -$(expr $number + $add;) | tail -21;};_xls'
 alias ext="find . -type f | grep -v '\/\.'|perl -ne 'print $1 if m/\.([^.\/]+)$/' | sort -u"
-alias desk='cd /cygdrive/c/Users/50007746/Desktop'
-alias
+alias desk='cd /cygdrive/c/Users/Abhasker/Desktop'
+alias  # Remind me all the aliases at startup.
 # US Work Servers SSH aliases : ssh to multiple servers.
 alias test='ssh -t abhasker@server1 ssh abhasker@server2.test.com'
-
-
-
-
-
-
-
-
-
-
-
-
 
