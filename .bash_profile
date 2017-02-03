@@ -66,6 +66,7 @@ alias ll='ls -rthFl -N --color=tty -T 0'
 alias lll='ls -N --color=tty -T 0 -lrthF -hR -d -1 $PWD/{*,.*}'
 alias mysql='mysql -A -u root -p'
 alias open='cygstart'
+alias calc='function _calc(){ exp="$@"; echo $1 | bc;};_calc'
 # Aliases for common directories:
 alias work='cd /cygdrive/c/Abhasker/Work'
 alias c='cd /cygdrive/c/'
