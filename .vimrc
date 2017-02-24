@@ -6,3 +6,4 @@ set softtabstop=4
 set nocompatible
 set backspace=indent,eol,start
 set pastetoggle=<F2>
+set encoding=utf-8
