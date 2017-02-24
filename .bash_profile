@@ -61,8 +61,8 @@ export PS1="\[$(tput setaf 4)\]\[$(tput bold)\][\t abhasker@xerox -> \W\\$ \[$(t
 # Aliases for common commands:
 alias space="sed 's/ /\\ /g\'"
 alias enca='enca -L none'
-alias l='ls -lrthFa'
-alias ll='ls -rthFl -N --color=tty -T 0'
+alias l='ls -lrthFa --color=tty -T 0'
+alias ll='ls -lrthF -N --color=tty -T 0'
 alias lll='ls -N --color=tty -T 0 -lrthF -hR -d -1 $PWD/{*,.*}'
 alias mysql='mysql -A -u root -p'
 alias open='cygstart'
