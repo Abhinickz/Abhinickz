@@ -1,0 +1,1 @@
+javascript:(function () { if (!window.counter) { window.counter = 1; run('hidden'); } else{ window.counter++; if (window.counter % 2 == 0) { run('visible'); } else{ run('hidden'); } } function run(param){ var images = document.getElementsByTagName('img'); var l = images.length; for (var i = 0; i < l; i++) { images[i].style.visibility = param; } } })();
