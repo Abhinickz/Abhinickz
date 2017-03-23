@@ -1,0 +1,8 @@
+#ignore everything
+*
+
+#except .c source
+!delete.pl
+!input.io*
+!temp.pl
+!test.pl
