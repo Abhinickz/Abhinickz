@@ -83,4 +83,5 @@ alias desk='cd /cygdrive/c/Users/Abhasker/Desktop'
 alias  # Remind me all the aliases at startup.
 # US Work Servers SSH aliases : ssh to multiple servers.
 alias test='ssh -t abhasker@server1 ssh abhasker@server2.test.com'
-
+alias perm='stat -c "%A %a %n"'
+alias fixmysql='/usr/sbin/mysqld.exe' #	For Cygwin MySQL Fixing.
