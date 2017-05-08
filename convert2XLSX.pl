@@ -77,7 +77,7 @@ while ( my $line = <$FH> ){
 }
 
 $workbook->close();
-close($FH);
+close( $FH );
 
 sub usage_help{
     print "Required Modules:\n";
@@ -85,14 +85,18 @@ sub usage_help{
     print "* Excel::Writer::XLSX\n\n";
     print "Install Modules via this command:\t cpan install Getopt::Long Excel::Writer::XLSX \n\n";
     print "USAGE: $0\n\n";
-    print "\tperl $0 --filename='test' --xlsxpath=test --freeze_panes=0 --autofilter=0 --split_pattern=\\t\n\n";
-    print "\tperl $0 -f='test' -x=test -p=0 -a=0 -s=\\t\n\n\n";
+    print "\tperl $0 --filename='test' --xlsxpath=test --freeze_panes=0 --autofilter=0 --split_pattern=\'\\t\'\n\n";
+    print "\tperl $0 -f='test' -x=test -p=0 -a=0 -s=\'\\t\'\n\n\n";
     
     print "Required: \n\t--filename -f : \tTAB Delimited text format filename or path!\n\n";
     print "Optional: \n\t--xlsxpath -x: \t\tIf given xlsx file will be generated with this Path, Name!\n\n";
     print "Optional: \n\t--freeze_panes -p: \tIf false xlsx file will be generated without freeze_panes!\n\n";
     print "Optional: \n\t--autofilter -a: \tIf false xlsx file will be generated without autofilter!\n\n";
-    print "Optional: \n\t--pattern -s: \tSplit file using this patttern default: \\t - TAB!\n\n";
+    print "Optional: \n\t--pattern -s: \t\tSplit file using this patttern default: \'\\t\' - TAB!\n\n";
     
     exit;
 }
+
+#    TO DO :
+# * Create a Module of this File.
+# * Everthing will go on function.
