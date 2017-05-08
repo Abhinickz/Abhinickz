@@ -6,7 +6,7 @@ use Excel::Writer::XLSX;
 my $help;
 my $filename;
 my $xlsxpath;
-my $freeze_panes = 1;    # Default Freeze Panes ON
+my $freeze_panes = 1;      # Default Freeze Panes ON
 my $autofilter = 1;        # Default Autofilter ON
 my $pattern = '\t';        # Default Pattern TAB
 
@@ -99,4 +99,4 @@ sub usage_help{
 
 #    TO DO :
 # * Create a Module of this File.
-# * Everthing will go on function.
+# * Everthing will go in function.
