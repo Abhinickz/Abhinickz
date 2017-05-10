@@ -52,7 +52,7 @@ my $worksheet = $workbook->add_worksheet( 'Data' );
 $worksheet->set_tab_color( 'blue' );
 ######################################################################
 ######################################################################
-
+$| = 1;
 while ( my $line = <$FH> ){
     #######    Write headers data.
     if ( $row_count == 0 ){
@@ -87,6 +87,7 @@ while ( my $line = <$FH> ){
         }    
     }
     $row_count++;
+	print "$row_count\r";
 }
 
 $workbook->close();
@@ -118,6 +119,19 @@ sub usage_help{
     exit;
 }
 
-#    TO DO :
-# * Create a Module of this File.
-# * Everthing will go in function.
+
+=head1 TO DO :
+
+convert2XLSX.pl
+
+=cut
+
+=over 
+
+* Need to change logic behind the data of new worksheet!
+
+* Create a Module of this File.
+
+* Everthing will go in function.
+
+=back
