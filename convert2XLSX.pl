@@ -7,8 +7,8 @@ my $help;
 my $filename;
 my $xlsxpath;
 my $freeze_panes = 1;      # Default Freeze Panes ON
-my $autofilter = 1;        # Default Autofilter ON
-my $pattern = '\t';        # Default Pattern TAB
+my $autofilter   = 1;      # Default Autofilter ON
+my $pattern      = '\t';   # Default Pattern TAB
 
 GetOptions(
     "help|h"                   => \$help,
@@ -20,7 +20,7 @@ GetOptions(
     
 );
 
-if ( $help || !$filename){
+if ( $help || !$filename ){
     usage_help();
 }
 
@@ -28,10 +28,11 @@ open ( my $FH, '<', $filename ) or die "Unable to open file $filename to read: $
 $filename =~ s/\.(.*)//g;
 
 $xlsxpath = $xlsxpath || $filename;
+$xlsxpath .= '.xlsx';
 
 ######################################################################
 ##################    Setting Up XLSX File Settings    ###############
-my $workbook = Excel::Writer::XLSX->new( "$xlsxpath.xlsx" );
+my $workbook = Excel::Writer::XLSX->new( "$xlsxpath" );
 my $row_count = 0;
 ####################    Setting up Data Format    ####################
 my $regformat = $workbook->add_format();
@@ -54,7 +55,7 @@ $worksheet->set_tab_color( 'blue' );
 
 while ( my $line = <$FH> ){
     #######    Write headers data.
-    if ( $row_count == 0 ){    
+    if ( $row_count == 0 ){
         my @headers = split( /$pattern/, $line );
         my $col_count = 0;
         foreach (@headers){
@@ -64,7 +65,19 @@ while ( my $line = <$FH> ){
         $worksheet->freeze_panes( 1, 0 ) if ( $freeze_panes );                  # Freeze first row.
         $worksheet->autofilter( 0, 0, 0, $col_count-1 )  if ( $autofilter );    # Set auto filter on first row & all columns.
     }
-    #######    Write rows data.
+	#######   XLSX File rows Limit (1048576) : Writes data into new Worksheet.
+	elsif( $row_count == 1048577 ){
+		$worksheet = $workbook->add_worksheet( 'Data'.$row_count );
+		$worksheet->set_tab_color( 'blue' );
+		my @headers = split( /$pattern/, $line );
+		my $col_count = 0;
+        foreach (@headers){
+            $worksheet->write( 0, $col_count, $_, $boldformat );
+            $col_count++;
+        }
+		$row_count = 0;
+	}
+	#######    Write rows data.
     else{
         my $col_count = 0;
         my @headers = split( /$pattern/, $line );
@@ -77,9 +90,17 @@ while ( my $line = <$FH> ){
 }
 
 $workbook->close();
+
+# sleep( 5 );
+#   Opens the created XLSX file if OS is cygwin!
+#   Assuming Excel is installed else it will open 
+#   The Windows Alert Box to choose the program to open,
+`cygstart $xlsxpath` if ( $^O eq 'cygwin' );
+
 close( $FH );
 
 sub usage_help{
+    
     print "Required Modules:\n";
     print "* Getopt::Long\n";
     print "* Excel::Writer::XLSX\n\n";
@@ -88,11 +109,11 @@ sub usage_help{
     print "\tperl $0 --filename='test' --xlsxpath=test --freeze_panes=0 --autofilter=0 --split_pattern=\'\\t\'\n\n";
     print "\tperl $0 -f='test' -x=test -p=0 -a=0 -s=\'\\t\'\n\n\n";
     
-    print "Required: \n\t--filename -f : \tTAB Delimited text format filename or path!\n\n";
-    print "Optional: \n\t--xlsxpath -x: \t\tIf given xlsx file will be generated with this Path, Name!\n\n";
-    print "Optional: \n\t--freeze_panes -p: \tIf false xlsx file will be generated without freeze_panes!\n\n";
-    print "Optional: \n\t--autofilter -a: \tIf false xlsx file will be generated without autofilter!\n\n";
-    print "Optional: \n\t--pattern -s: \t\tSplit file using this patttern default: \'\\t\' - TAB!\n\n";
+    print "Required: \n\t-f --filename : \tTAB Delimited text format filename or path!\n\n";
+    print "Optional: \n\n\t-x--xlsxpath : \t\tIf given xlsx file will be generated with this Path, Name!\n\n";
+    print "\t-p --freeze_panes : \tIf false xlsx file will be generated without freeze_panes!\n\n";
+    print "\t-a --autofilter : \tIf false xlsx file will be generated without autofilter!\n\n";
+    print "\t-s --pattern : \t\tSplit file using this PCRE patttern default: \'\\t\' - TAB!\n\n";
     
     exit;
 }
