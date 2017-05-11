@@ -16,8 +16,7 @@ GetOptions(
     "xlsxpath|x=s"             => \$xlsxpath,
     "freeze_panes|p=i"         => \$freeze_panes,
     "autofilter|a=i"           => \$autofilter,
-    "pattern|s=s"              => \$pattern,
-    
+    "pattern|s=s"              => \$pattern,    
 );
 
 if ( $help || !$filename ){
@@ -66,13 +65,13 @@ while ( my $line = <$FH> ){
         $worksheet->autofilter( 0, 0, 0, $col_count-1 )  if ( $autofilter );    # Set auto filter on first row & all columns.
     }
 	#######   XLSX File rows Limit (1048576) : Writes data into new Worksheet.
-	elsif( $row_count == 1048577 ){
-		$worksheet = $workbook->add_worksheet( 'Data'.$row_count );
-		$worksheet->set_tab_color( 'blue' );
+	elsif( $row_count > 1048576 ){
+		$worksheet = $workbook->add_worksheet( 'Data'.time());
+		$worksheet->set_tab_color( 'red' );
 		my @headers = split( /$pattern/, $line );
 		my $col_count = 0;
         foreach (@headers){
-            $worksheet->write( 0, $col_count, $_, $boldformat );
+            $worksheet->write( 0, $col_count, $_, $regformat );
             $col_count++;
         }
 		$row_count = 0;
@@ -92,7 +91,6 @@ while ( my $line = <$FH> ){
 
 $workbook->close();
 
-# sleep( 5 );
 #   Opens the created XLSX file if OS is cygwin!
 #   Assuming Excel is installed else it will open 
 #   The Windows Alert Box to choose the program to open,
@@ -114,7 +112,7 @@ sub usage_help{
     print "Optional: \n\n\t-x--xlsxpath : \t\tIf given xlsx file will be generated with this Path, Name!\n\n";
     print "\t-p --freeze_panes : \tIf false xlsx file will be generated without freeze_panes!\n\n";
     print "\t-a --autofilter : \tIf false xlsx file will be generated without autofilter!\n\n";
-    print "\t-s --pattern : \t\tSplit file using this PCRE patttern default: \'\\t\' - TAB!\n\n";
+    print "\t-s --pattern : \t\tSplit file using PCRE Compatible patttern ( default: \'\\t\' - TAB )\n\n";
     
     exit;
 }
