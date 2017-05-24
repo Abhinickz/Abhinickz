@@ -31,14 +31,19 @@ $xlsxpath .= '.xlsx';
 
 ######################################################################
 ##################    Setting Up XLSX File Settings    ###############
+
 my $workbook = Excel::Writer::XLSX->new( "$xlsxpath" );
 my $row_count = 0;
+
 ####################    Setting up Data Format    ####################
+
 my $regformat = $workbook->add_format();
 $regformat->set_font( 'Calibri' );
 $regformat->set_size(11);
 $regformat->set_border();
+
 ####################    Setting up Header Format #####################
+
 my $boldformat = $workbook->add_format();
 $boldformat->set_bold();
 $boldformat->set_color( 'white' );
@@ -46,12 +51,16 @@ $boldformat->set_font( 'Calibri' );
 $boldformat->set_size(11);
 $boldformat->set_border();
 $boldformat->set_bg_color( 'red' );
+
 ##################    Setting Up Worksheet Settings    ###############
+
 my $worksheet = $workbook->add_worksheet( 'Data' );
 $worksheet->set_tab_color( 'blue' );
+
 ######################################################################
 ######################################################################
 $| = 1;
+my $worksheet_count = 1;
 while ( my $line = <$FH> ){
     #######    Write headers data.
     if ( $row_count == 0 ){
@@ -66,7 +75,8 @@ while ( my $line = <$FH> ){
     }
 	#######   XLSX File rows Limit (1048576) : Writes data into new Worksheet.
 	elsif( $row_count > 1048576 ){
-		$worksheet = $workbook->add_worksheet( 'Data'.time());
+		$worksheet_count++;
+		$worksheet = $workbook->add_worksheet( 'Data_'.$worksheet_count);
 		$worksheet->set_tab_color( 'red' );
 		my @headers = split( /$pattern/, $line );
 		my $col_count = 0;
