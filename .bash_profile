@@ -85,3 +85,5 @@ alias  # Remind me all the aliases at startup.
 alias test='ssh -t abhasker@server1 ssh abhasker@server2.test.com'
 alias perm='stat -c "%A %a %n"'
 alias fixmysql='/usr/sbin/mysqld.exe' #	For Cygwin MySQL Fixing.
+alias commit='echo "Enter Commit message : " && read MSG && git add . && git commit -m "$MSG" '
+alias push='echo "Enter Commit message : " && read MSG && git add . && git commit -m "$MSG" && git push'
