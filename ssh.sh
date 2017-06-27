@@ -8,6 +8,7 @@ END
 ); 
 
 # Copied back text to Windows Clipboard, So I can just paste it as soon as I login.
+echo -e "\n================================================================================================$export_cmd================================================================================================\n"
 echo $export_cmd > /dev/clipboard;
 
 echo -e "Logging $1\n";
