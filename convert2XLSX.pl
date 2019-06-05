@@ -101,12 +101,17 @@ while ( my $line = <$FH> ){
 
 $workbook->close();
 
+close( $FH );
+
 #   Opens the created XLSX file if OS is cygwin!
 #   Assuming Excel is installed else it will open 
 #   The Windows Alert Box to choose the program to open,
-`cygstart $xlsxpath` if ( $^O eq 'cygwin' );
-
-close( $FH );
+if ( $^O eq 'cygwin' ){   # Works on Cygwin.
+	`cygstart $xlsxpath`;
+}
+elsif ( $^O eq 'linux' ){ # Works on Ubuntu.
+	`xdg-open $xlsxpath`
+}
 
 sub usage_help{
     
@@ -115,11 +120,11 @@ sub usage_help{
     print "* Excel::Writer::XLSX\n\n";
     print "Install Modules via this command:\t cpan install Getopt::Long Excel::Writer::XLSX \n\n";
     print "USAGE: $0\n\n";
-    print "\tperl $0 --filename='test' --xlsxpath=test --freeze_panes=0 --autofilter=0 --split_pattern=\'\\t\'\n\n";
-    print "\tperl $0 -f='test' -x=test -p=0 -a=0 -s=\'\\t\'\n\n\n";
+    print "\tperl $0 --filename='test.txt' --xlsxpath=test --freeze_panes=0 --autofilter=0 --split_pattern=\'\\t\'\n\n";
+    print "\tperl $0 -f='test.txt' -x=test -p=0 -a=0 -s=\'\\t\'\n\n\n";
     
-    print "Required: \n\t-f --filename : \tTAB Delimited text format filename or path!\n\n";
-    print "Optional: \n\n\t-x--xlsxpath : \t\tIf given xlsx file will be generated with this Path, Name!\n\n";
+    print "Required: \n\t-f --filename : \tTAB Delimited OR -s text format filename or path!\n\n";
+    print "Optional: \n\n\t-x --xlsxpath : \tIf given xlsx file will be generated with this Path, Name!\n\n";
     print "\t-p --freeze_panes : \tIf false xlsx file will be generated without freeze_panes!\n\n";
     print "\t-a --autofilter : \tIf false xlsx file will be generated without autofilter!\n\n";
     print "\t-s --pattern : \t\tSplit file using PCRE Compatible patttern ( default: \'\\t\' - TAB )\n\n";
