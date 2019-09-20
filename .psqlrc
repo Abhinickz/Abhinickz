@@ -1,1 +1,6 @@
-\set PROMPT1 '%[%033[1;31m%][%`date +%H:%M:%S`] [%/] %x%# %033[0m%]'
+\set PROMPT1 '%[%033[7;31m%] -------- [%`date +%H:%M:%S`]%033[0m%]%[%033[7;31m%][%/] -------- %033[0m%]\n'
+\pset null NULL
+\pset pager off
+\set COMP_KEYWORD_CASE upper
+\set HISTFILE ~/.psql_history- :DBNAME
+\set HISTSIZE 15000
