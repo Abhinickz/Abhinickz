@@ -118,6 +118,7 @@ alias server='http-server -p 5000 -c-1';
 alias sync='NOW=/home/abhinickz/test/rsync_$(date +"%F_%H_%M_%S").log; echo $NOW;sh /home/abhinickz/test/clear_logs.sh && rsync -razP --delete -e '"'"'ssh -p 22'"'"' --progress /home/abhinickz/test/. abhinickz@abhinickz_remote:/home/abhinickz/Backup_Local/test/. > $NOW';
 
 #######################################################################################################################
+#######################################################################################################################
 ################################################### Aliases for GIT: ##################################################
 #######################################################################################################################
 alias gdiff='git diff'
@@ -154,8 +155,10 @@ alias gpom='git push origin master'
 alias gr='git remote'
 alias grv='git remote -v'
 alias gra='git remote add'
-alias gd='git diff -U0'
-alias gdc='git diff --cached -U0'
+alias gd='git diff'
+alias gdf='git diff -U0'
+alias gdc='git diff --cached'
+alias gdfc='git diff --cached -U0'
 alias gdv='git diff -w "$@" | vim -R -'
 alias gc='git commit -v'
 alias gca='git commit -v -a'
