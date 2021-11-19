@@ -1,3 +1,16 @@
+USERDIR=/home/`whoami` # abhasker
+
+if [ "$(uname)" == "Darwin" ]
+then
+    USERDIR=/Users/`whoami`;
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]
+then
+    USERDIR=/home/`whoami`;
+elif [ -n "$COMSPEC" -a -x "$COMSPEC" ]
+then 
+  echo $0: this script does not support this env \:\(
+fi
+
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -218,9 +231,23 @@ export PS1="\[$(tput setaf 4)\]\[$(tput bold)\]\[$(tput rev)\][\t\[$(tput blink)
 # [14:58:48][test_db] RED with Inverted
 
 alias enca='enca -L none';
-alias l='ls -lrthFa --color=tty -T 0';
-alias ll='ls -lrthF -N --color=tty -T 0';
-alias lll='ls -N --color=tty -T 0 -lrthF -hR -d -1 $PWD/{*,.*}';
+
+
+if [ "$(uname)" == "Darwin" ]
+then
+    alias l='ls -lrthFa --color=tty';
+    alias ll='ls -lrthF --color=tty';
+    alias lll='ls --color=tty -lrthF -hR -d -1 $PWD/{*,.*}';
+elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]
+then
+    alias l='ls -lrthFa --color=tty -T 0';
+    alias ll='ls -lrthF -N --color=tty -T 0';
+    alias lll='ls -N --color=tty -T 0 -lrthF -hR -d -1 $PWD/{*,.*}';
+elif [ -n "$COMSPEC" -a -x "$COMSPEC" ]
+then 
+  echo $0: this script does not support this env \:\(
+fi
+
 # alias ram_free="sudo sh -c 'free -m && sync && echo 3 > /proc/sys/vm/drop_caches && free -m'"; # emptying the buffers cache
 
 #wsl:
@@ -277,7 +304,7 @@ alias process='watch -n 1 ps auxf';
 alias ipv4='wget -qO- ipv4.icanhazip.com';
 
 alias did="vim +'normal Go' +'r!date' ~/did.txt";
-alias gif='/home/abhasker/.local/bin/gif-for-cli';
+alias gif='${USERDIR}/.local/bin/gif-for-cli';
 
 alias postgres='sudo -u postgres -i';
 
@@ -293,7 +320,7 @@ function fw() {
 		echo 'current iptables rules: ';
 		sudo iptables -nvL
 	else
-		sudo bash /home/abhasker/dev_work/iptables_rules_apply.bash $1
+		sudo bash ${USERDIR}/dev_work/iptables_rules_apply.bash $1
 	fi
 }
 #############################################################################################################################################################################
@@ -319,26 +346,26 @@ alias download="cd ~/downloads/";
 alias dev="cd ~/dev_work/";
 alias work="cd ~/work/";
 alias calc='function _calc(){ exp="$@"; echo $1 | bc -l ;};_calc';	# Replace bc -l to bc if need to work with integers only!
-# alias 0='paplay /home/abhasker/.config-bak/.config/google-chrome-beta/Default/Extensions/oeopbcgkkoapgobdbedcemjljbihmemj/22.1_0/sounds/ultranova.ogg';alias error=0;
+# alias 0='paplay ${USERDIR}/.config-bak/.config/google-chrome-beta/Default/Extensions/oeopbcgkkoapgobdbedcemjljbihmemj/22.1_0/sounds/ultranova.ogg';alias error=0;
 # alias 1='paplay /usr/share/sounds/Kopete_User_is_Online.ogg';alias ok=1;
-# alias ok='paplay /home/abhasker/.config-bak/.config/google-chrome-beta/Default/Extensions/oeopbcgkkoapgobdbedcemjljbihmemj/22.1_0/sounds/bell.ogg';
+# alias ok='paplay ${USERDIR}/.config-bak/.config/google-chrome-beta/Default/Extensions/oeopbcgkkoapgobdbedcemjljbihmemj/22.1_0/sounds/bell.ogg';
 #########################################################################################################################################
 export PGPASSWORD='XXXXX';
-export PERL5LIB=/home/abhasker/projects/:${PERL5LIB};
+export PERL5LIB=${USERDIR}/projects/:${PERL5LIB};
 #########################################################################################################################################
 alias psqldb='psql test;';
-alias project='cd /home/abhasker/projects/';
+alias project='cd ${USERDIR}/projects/';
 export PAT='XXXXX'; # github dev token for docker test build
 #########################################################################################################################################
 # Sync Work Stuff:
-# alias sync_work='NOW=/home/abhasker/backup_local/rsync_$(date +"%F_%H_%M_%S")_work.log; echo $NOW; rsync -razP --delete -e '"'"'ssh'"'"' --progress /home/abhasker/work/. abhishek@test:/home/abhishek/backup_local/work/. | tee $NOW';
+# alias sync_work='NOW=${USERDIR}/backup_local/rsync_$(date +"%F_%H_%M_%S")_work.log; echo $NOW; rsync -razP --delete -e '"'"'ssh'"'"' --progress ${USERDIR}/work/. abhishek@test:/home/abhishek/backup_local/work/. | tee $NOW';
 #########################################################################################################################################
 # alias compile_handlbars='function _compile_handlbars { exp="$@"; dir=$(dirname $exp); cd $dir; handlebars -am *.handlebars > template.build.js; cd -; };_compile_handlbars';
 #########################################################################################################################################
 # check_tickets_date_range '2018-12-31 00:00' '2020-05-25 00:00'
 function check_tickets_date_range () {
     echo -e \
-	`cd /home/abhasker/projects/ && git log upstream/master --after="$1" --before="$2" --merges | rg 'Abhinickz' | perl -ne 'print $1."\n" if ( $_ =~ m/.*(P3-\d{4}).*/g);' | uniq | sort` \
+	`cd ${USERDIR}/projects/ && git log upstream/master --after="$1" --before="$2" --merges | rg 'Abhinickz' | perl -ne 'print $1."\n" if ( $_ =~ m/.*(P3-\d{4}).*/g);' | uniq | sort` \
 	| tr " " "\n" \
 	| sort \
 	| uniq
@@ -377,24 +404,24 @@ alias psql3='psql -q -h localhost -p 5433 -U abhasker -d ';
 #########################################################################################################################################
 export RUSTC_WRAPPER=sccache; # will use cache (sccache) for compilation
 alias run='RUSTFLAGS=-Awarnings cargo run -q';
-export RUST_SRC_PATH='/home/abhasker/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src/';
+export RUST_SRC_PATH='${USERDIR}/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src/';
 export CARGO_PKG_AUTHORS='Abhishek Bhasker <abhinickz6@gmail.com>';
-export GOPATH='/home/abhasker/dev_work/softwares/go_path';
+export GOPATH='${USERDIR}/dev_work/softwares/go_path';
 
 # go bin:
 export PATH=$PATH:'/usr/local/go/bin';
 export PATH=$PATH:'~/.go/bin';
 
 # python bin:
-export PATH=$PATH:'/home/abhasker/.local/bin';
+export PATH=$PATH:'${USERDIR}/.local/bin';
 
 alias cls='clear';alias cl='clear';
 # Start node http-server on port 5000;
 alias server='http-server -p 5000 -c-1';
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/home/abhasker/.sdkman"
-[[ -s "/home/abhasker/.sdkman/bin/sdkman-init.sh" ]] && source "/home/abhasker/.sdkman/bin/sdkman-init.sh"
+export SDKMAN_DIR="${USERDIR}/.sdkman"
+[[ -s "${USERDIR}/.sdkman/bin/sdkman-init.sh" ]] && source "${USERDIR}/.sdkman/bin/sdkman-init.sh"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
@@ -452,7 +479,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 #########################################################################################################################################
-source /home/abhasker/.config/broot/launcher/bash/br
+source ${USERDIR}/.config/broot/launcher/bash/br
 #########################################################################################################################################
 #########################################################################################################################################
 ################################################### Aliases for GIT: ####################################################################
