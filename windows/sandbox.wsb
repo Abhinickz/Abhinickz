@@ -1,0 +1,8 @@
+<Configuration>
+	<MappedFolders>
+		<MappedFolder>
+			<HostFolder>W:\personal\sandbox\</HostFolder>
+			<ReadOnly>false</ReadOnly>
+		</MappedFolder>
+	</MappedFolders>
+</Configuration>
