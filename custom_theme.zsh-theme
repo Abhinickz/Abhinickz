@@ -1,96 +1,64 @@
-# ------------------------------------------------------------------------------
-# ~/.oh-my-zsh/themes/custom_theme.zsh-theme
-# based on https://github.com/caiogondim/bullet-train.zsh/blob/master/bullet-train.zsh-theme 
-# ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-# CONFIGURATION
-# The default configuration, that can be overwrite in your .zshrc file
-# ------------------------------------------------------------------------------
+# vim:ft=zsh ts=2 sw=2 sts=2
+#
+# agnoster's Theme - https://gist.github.com/3712874
+# A Powerline-inspired theme for ZSH
+#
+# # README
+#
+# In order for this theme to render correctly, you will need a
+# [Powerline-patched font](https://github.com/Lokaltog/powerline-fonts).
+# Make sure you have a recent version: the code points that Powerline
+# uses changed in 2012, and older versions will display incorrectly,
+# in confusing ways.
+#
+# In addition, I recommend the
+# [Solarized theme](https://github.com/altercation/solarized/) and, if you're
+# using it on Mac OS X, [iTerm 2](https://iterm2.com/) over Terminal.app -
+# it has significantly better color fidelity.
+#
+# If using with "light" variant of the Solarized color schema, set
+# SOLARIZED_THEME variable to "light". If you don't specify, we'll assume
+# you're using the "dark" variant.
+#
+# # Goals
+#
+# The aim of this theme is to only show you *relevant* information. Like most
+# prompts, it will only show git information when in a git working directory.
+# However, it goes a step further: everything from the current user and
+# hostname to whether the last call exited with an error to whether background
+# jobs are running in this shell will all be displayed automatically when
+# appropriate.
 
-VIRTUAL_ENV_DISABLE_PROMPT=true
-
-# Define order and content of prompt
-if [ ! -n "${CUSTOM_PROMPT_ORDER+1}" ]; then
-  CUSTOM_PROMPT_ORDER=(
-    time
-    status
-    custom
-    dir
-  )
-fi
-
-# PROMPT
-if [ ! -n "${CUSTOM_PROMPT_CHAR+1}" ]; then
-  CUSTOM_PROMPT_CHAR="\$"
-fi
-if [ ! -n "${CUSTOM_PROMPT_ROOT+1}" ]; then
-  CUSTOM_PROMPT_ROOT=true
-fi
-if [ ! -n "${CUSTOM_PROMPT_SEPARATE_LINE+1}" ]; then
-  CUSTOM_PROMPT_SEPARATE_LINE=false
-fi
-if [ ! -n "${CUSTOM_PROMPT_ADD_NEWLINE+1}" ]; then
-  CUSTOM_PROMPT_ADD_NEWLINE=false
-fi
-
-# STATUS
-if [ ! -n "${CUSTOM_STATUS_EXIT_SHOW+1}" ]; then
-  CUSTOM_STATUS_EXIT_SHOW=false
-fi
-if [ ! -n "${CUSTOM_STATUS_BG+1}" ]; then
-  CUSTOM_STATUS_BG=green
-fi
-if [ ! -n "${CUSTOM_STATUS_ERROR_BG+1}" ]; then
-  CUSTOM_STATUS_ERROR_BG=red
-fi
-if [ ! -n "${CUSTOM_STATUS_FG+1}" ]; then
-  CUSTOM_STATUS_FG=white
-fi
-
-# TIME
-if [ ! -n "${CUSTOM_TIME_BG+1}" ]; then
-  CUSTOM_TIME_BG=white
-fi
-if [ ! -n "${CUSTOM_TIME_FG+1}" ]; then
-  CUSTOM_TIME_FG=black
-fi
-
-# CUSTOM
-if [ ! -n "${CUSTOM_CUSTOM_MSG+1}" ]; then
-  CUSTOM_CUSTOM_MSG=false
-fi
-if [ ! -n "${CUSTOM_CUSTOM_BG+1}" ]; then
-  CUSTOM_CUSTOM_BG=black
-fi
-if [ ! -n "${CUSTOM_CUSTOM_FG+1}" ]; then
-  CUSTOM_CUSTOM_FG=default
-fi
-
-# DIR
-if [ ! -n "${CUSTOM_DIR_BG+1}" ]; then
-  CUSTOM_DIR_BG=blue
-fi
-if [ ! -n "${CUSTOM_DIR_FG+1}" ]; then
-  CUSTOM_DIR_FG=white
-fi
-if [ ! -n "${CUSTOM_DIR_CONTEXT_SHOW+1}" ]; then
-  CUSTOM_DIR_CONTEXT_SHOW=false
-fi
-if [ ! -n "${CUSTOM_DIR_EXTENDED+1}" ]; then
-  CUSTOM_DIR_EXTENDED=1
-fi
-
-# ------------------------------------------------------------------------------
-# SEGMENT DRAWING
-# A few functions to make it easy and re-usable to draw segmented prompts
-# ------------------------------------------------------------------------------
+### Segment drawing
+# A few utility functions to make it easy and re-usable to draw segmented prompts
 
 CURRENT_BG='NONE'
-SEGMENT_SEPARATOR=''
+
+case ${SOLARIZED_THEME:-dark} in
+    light) CURRENT_FG='white';;
+    *)     CURRENT_FG='black';;
+esac
+
+# Special Powerline characters
+
+() {
+  local LC_ALL="" LC_CTYPE="en_US.UTF-8"
+  # NOTE: This segment separator character is correct.  In 2012, Powerline changed
+  # the code points they use for their special characters. This is the new code point.
+  # If this is not working for you, you probably have an old version of the
+  # Powerline-patched fonts installed. Download and install the new version.
+  # Do not submit PRs to change this unless you have reviewed the Powerline code point
+  # history and have new information.
+  # This is defined using a Unicode escape sequence so it is unambiguously readable, regardless of
+  # what font the user is viewing this source code in. Do not replace the
+  # escape sequence with a single literal character.
+  # Do not change this! Do not make it '\u2b80'; that is the old, wrong code point.
+  SEGMENT_SEPARATOR=$'\ue0b0'
+}
 
 # Begin a segment
-# Takes three arguments, background, foreground and text. All of them can be omitted,
-# rendering default background/foreground and no text.
+# Takes two arguments, background and foreground. Both can be omitted,
+# rendering default background/foreground.
 prompt_segment() {
   local bg fg
   [[ -n $1 ]] && bg="%K{$1}" || bg="%k"
@@ -115,159 +83,36 @@ prompt_end() {
   CURRENT_BG=''
 }
 
-# ------------------------------------------------------------------------------
-# PROMPT COMPONENTS
-# Each component will draw itself, and hide itself if no information needs
-# to be shown
-# ------------------------------------------------------------------------------
+### Prompt components
+# Each component will draw itself, and hide itself if no information needs to be shown
 
 # Context: user@hostname (who am I and where am I)
-context() {
-  local user="$(whoami)"
-  [[ "$user" != "$CUSTOM_CONTEXT_DEFAULT_USER" || -n "$CUSTOM_IS_SSH_CLIENT" ]] && echo -n "${user}@$CUSTOM_CONTEXT_HOSTNAME"
-}
-
 prompt_context() {
-  local _context="$(context)"
-  [[ -n "$_context" ]] && prompt_segment $CUSTOM_CONTEXT_BG $CUSTOM_CONTEXT_FG "$_context"
-}
-
-# Based on http://stackoverflow.com/a/32164707/3859566
-function displaytime {
-  local T=$1
-  local D=$((T/60/60/24))
-  local H=$((T/60/60%24))
-  local M=$((T/60%60))
-  local S=$((T%60))
-  [[ $D > 0 ]] && printf '%dd' $D
-  [[ $H > 0 ]] && printf '%dh' $H
-  [[ $M > 0 ]] && printf '%dm' $M
-  printf '%ds' $S
-}
-
-# Prompt previous command execution time
-preexec() {
-  cmd_timestamp=`date +%s`
-}
-
-precmd() {
-  local stop=`date +%s`
-  local start=${cmd_timestamp:-$stop}
-  let CUSTOM_last_exec_duration=$stop-$start
-  cmd_timestamp=''
-}
-
-prompt_cmd_exec_time() {
-  [ $CUSTOM_last_exec_duration -gt $CUSTOM_EXEC_TIME_ELAPSED ] && prompt_segment $CUSTOM_EXEC_TIME_BG $CUSTOM_EXEC_TIME_FG "$(displaytime $CUSTOM_last_exec_duration)"
-}
-
-# Custom
-prompt_custom() {
-  if [[ $CUSTOM_CUSTOM_MSG == false ]]; then
-    return
+  if [[ "$USERNAME" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
+    # prompt_segment black default "%(!.%{%F{yellow}%}.)%n@%m"
+    # prompt_segment black default "%(!.%{%F{yellow}%}.)%D{%y-%m-%f}|%D{%L:%M:%S}"
+    prompt_segment white red "%(!.%{%F{yellow}%}.)%D{%L:%M:%S}"
   fi
-
-  local custom_msg
-  eval custom_msg=$CUSTOM_CUSTOM_MSG
-  [[ -n "${custom_msg}" ]] && prompt_segment $CUSTOM_CUSTOM_BG $CUSTOM_CUSTOM_FG "${custom_msg}"
 }
 
 # Dir: current working directory
 prompt_dir() {
-  local dir=''
-  local _context="$(context)"
-  local CUSTOM_DIR_EXTENDED=0 # Show only current working directory
-  [[ $CUSTOM_DIR_CONTEXT_SHOW == true && -n "$_context" ]] && dir="${dir}${_context}:"
-
-  if [[ $CUSTOM_DIR_EXTENDED == 0 ]]; then
-    #short directories
-    dir="${dir}%1~"
-  elif [[ $CUSTOM_DIR_EXTENDED == 2 ]]; then
-    #long directories
-    dir="${dir}%0~"
-  else
-    #medium directories (default case)
-    dir="${dir}%4(c:...:)%3c"
-  fi
-
-  prompt_segment $CUSTOM_DIR_BG $CUSTOM_DIR_FG $dir
+  # prompt_segment grey $CURRENT_FG '%1~'
+  prompt_segment cyan $CURRENT_FG '%1~'
 }
 
-prompt_time() {
-  if [[ $CUSTOM_TIME_12HR == true ]]; then
-    prompt_segment $CUSTOM_TIME_BG $CUSTOM_TIME_FG %D{%r}
-  else
-    prompt_segment $CUSTOM_TIME_BG $CUSTOM_TIME_FG %D{%T}
-  fi
-}
-
-# Status:
-# - was there an error
-# - am I root
-# - are there background jobs?
-prompt_status() {
-  local symbols
-  symbols=()
-  [[ $RETVAL -ne 0 && $CUSTOM_STATUS_EXIT_SHOW != true ]] && symbols+="✘"
-  [[ $RETVAL -ne 0 && $CUSTOM_STATUS_EXIT_SHOW == true ]] && symbols+="✘ $RETVAL"
-  [[ $UID -eq 0 ]] && symbols+="%{%F{yellow}%}⚡%f"
-  [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="⚙"
-
-  if [[ -n "$symbols" && $RETVAL -ne 0 ]]; then
-    prompt_segment $CUSTOM_STATUS_ERROR_BG $CUSTOM_STATUS_FG "$symbols"
-  elif [[ -n "$symbols" ]]; then
-    prompt_segment $CUSTOM_STATUS_BG $CUSTOM_STATUS_FG "$symbols"
-  fi
-
-}
-
-# Prompt Character
-prompt_chars() {
-  local bt_prompt_chars="${CUSTOM_PROMPT_CHAR}"
-
-  if [[ $CUSTOM_PROMPT_ROOT == true ]]; then
-    bt_prompt_chars="%(!.%F{red}# .%F{green}${bt_prompt_chars}%f)"
-  fi
-
-  if [[ $CUSTOM_PROMPT_SEPARATE_LINE == false ]]; then
-    bt_prompt_chars="${bt_prompt_chars}"
-  fi
-
-  echo -n "$bt_prompt_chars"
-
-  if [[ -n $CUSTOM_PROMPT_CHAR ]]; then
-    echo -n " "
-  fi
-}
-
-# Prompt Line Separator
-prompt_line_sep() {
-  if [[ $CUSTOM_PROMPT_SEPARATE_LINE == true ]]; then
-    # newline wont print without a non newline character, so add a zero-width space
-    echo -e '\n%{\u200B%}'
-  fi
-}
-
-# ------------------------------------------------------------------------------
-# MAIN
-# Entry point
-# ------------------------------------------------------------------------------
-
+## Main prompt
 build_prompt() {
   RETVAL=$?
-  for segment in $CUSTOM_PROMPT_ORDER
-  do
-    prompt_$segment
-  done
+  # prompt_status
+  # prompt_virtualenv
+  # prompt_aws
+  prompt_context
+  prompt_dir
+  # prompt_git
+  # prompt_bzr
+  # prompt_hg
   prompt_end
 }
 
-NEWLINE='
-'
-PROMPT=''
-[[ $CUSTOM_PROMPT_ADD_NEWLINE == true ]] && PROMPT="$PROMPT$NEWLINE"
-PROMPT="$PROMPT"'%{%f%b%k%}$(build_prompt)'
-[[ $CUSTOM_PROMPT_SEPARATE_LINE == true ]] && PROMPT="$PROMPT$NEWLINE"
-PROMPT="$PROMPT"'%{${fg_bold[default]}%}'
-[[ $CUSTOM_PROMPT_SEPARATE_LINE == false ]] && PROMPT="$PROMPT "
-PROMPT="$PROMPT"'$(prompt_chars)%{$reset_color%}'
+PROMPT='%{%f%b%k%}$(build_prompt) '
