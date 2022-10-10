@@ -1951,3 +1951,106 @@ sub get {
     return $value;
 }
 ```
+```perl
+#   perl: change $USER within perl script: Using linux uid:
+use POSIX qw(setuid getuid);
+my $w = scalar getpwuid($<);
+if ( $w eq 'root' ) {
+    print "Hey, you're root... let's try to become 'user_name'\n";
+    my (
+        $pwName,    $pwCode, $pwUid,  $pwGid, $pwQuota,
+        $pwComment, $pwGcos, $pwHome, $pwLogprog
+    ) = getpwnam("user_name");    # become user user_name
+    unless ($pwUid) {
+        die("That user doesn't exist\n");
+    }
+    print "Trying to become UID $pwUid\n";
+    setuid($pwUid);               # Become user_name
+}
+elsif ( $w ne 'user_name' ) {
+    die("You must be user_name to run this\n");
+}
+$w = scalar getpwuid($<);         # Test who we are
+print "Ok, now we are: " . $w . "\n";
+```
+```perl
+#   perl: regex: positive lookahead: matches characters immediately followed by the same charcter:
+(\w)(?=\1)
+```
+```perl
+#   perl: regex: negative lookahead: matches characters immediately not followed by the same charcter:
+(\w)(?!\1)
+```
+```perl
+#   perl date: 10/03/2022
+use POSIX qw(strftime);
+my $date = strftime "%m/%d/%Y", localtime;
+print $date;
+```
+```perl
+#   perl: find repeated elements in array:
+my %uniq;
+if ( grep ++$uniq{ $_ } > 1, @numbers ) {
+    # some numbers are repeated
+}
+```
+```perl
+#   perl: map usage:
+my @sorted_numbers = sort { $a <=> $b } map hex, @numbers;
+```
+```perl
+#   perl feature : file size in perl or linux
+my $size = (stat $file_path)[7];
+```
+```perl
+#   perl: sort array of hashref
+my @sorted = sort { $a->{k1} <=> $b->{k1} } @l;
+```
+```perl
+#   perl: mixing two array in perl.
+@array1 = qw/test1 test2 test3 test4 test5/;
+@array2 = qw/answer1 answer2 answer3 answer4 answer5/;
+@array3 = ();
+map {push(@array3, $array1[$_] . "|" . $array2[$_])} 0..$#array1;
+# \@array3 = [
+#     'test1|answer1',
+#     'test2|answer2',
+#     'test3|answer3',
+#     'test4|answer4',
+#     'test5|answer5'
+# ];
+```
+```perl
+#   perl: get full file path from script running location:
+my $file_name = Cwd::realpath($File::Find::name);
+```
+```perl
+#   perl: file find rules:
+use File::Find::Rule;
+```
+```perl
+#   perl: get fraction with given accuracy:
+use Math::BigFloat;
+Math::BigFloat->accuracy(8);
+print new Math::BigFloat $pos/$total_element;
+# 0.5 => 0.500000
+```
+```perl
+#   perl: get index of searched value in array:
+my ($index) = grep { $array[$_] eq $val } (0 .. @array-1);
+print defined $index ? $index : -1;
+```
+```perl
+#   perl: find file with rules:
+# find ./ -maxdepth 1 -mtime -1 -type d
+# as above, but without method chaining
+my @sub_dir =  File::Find::Rule->directory
+    ->maxdepth('1')
+    ->mtime( '>1' )
+    ->in( '/home/abhinickz/projects' );
+```
+```perl
+#   perl: regex: get no of occurences without loop.
+my $string = "one.two.three.four";
+my $number = () = $string =~ /\./gi; # 3
+```
