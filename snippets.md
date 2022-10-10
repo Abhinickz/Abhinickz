@@ -908,3 +908,103 @@ convert -units PixelsPerInch old.png -density 300 resized_dpi.png
 tesseract source.png destination
 tesseract get_file_downloading.png get_file_downloading
 ```
+```bash
+#   pdf: combine multiple PDF:
+pdftk file1.pdf file2.pdf cat output output.pdf
+```
+```bash
+#   pdf: get pdf information:
+pdfinfo test.pdf
+pdfinfo test.pdf | grep -i Pages:
+```
+```bash
+#   bash: ssh: generate new ssh key:
+ssh-keygen -t rsa -b 4096 -C "abhinickz@test.dev" -a 5
+# Generating public/private rsa key pair.
+# Enter file in which to save the key (/home/abhinickz/.ssh/id_rsa): /home/abhinickz/.ssh/dev_id_rsa
+# Enter passphrase (empty for no passphrase):
+# Enter same passphrase again:
+# Your identification has been saved in /home/abhinickz/.ssh/dev_id_rsa
+# Your public key has been saved in /home/abhinickz/.ssh/dev_id_rsa.pub
+# The key fingerprint is:
+# ...
+# ...
+# +---[RSA 4096]----+
+# | o= .........    |
+# +----[SHA256]-----+
+```
+```bash
+#   bash: start ssh agent:
+eval "$(ssh-agent -s)"
+# Agent pid 30690
+```
+```bash
+#   bash: add the above generated keys to ssh agent:
+ssh-add ~/.ssh/dev_id_rsa
+# Enter passphrase for /home/abhinickz/.ssh/dev_id_rsa:
+# Identity added: /home/abhinickz/.ssh/dev_id_rsa (abhinickz@test.dev)
+```
+```bash
+#   bash: git: check ssh status/keys from github:
+ssh -T git@github.com
+# Hi Abhinickz! You've successfully authenticated, but GitHub does not provide shell access.
+```
+```bash
+#   bash: ssh: copy ssh key to remote:
+ssh-copy-id -f -i ~/.ssh/dev_id_rsa abhinickz@dev
+# /usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/abhinickz/.ssh/dev.pub"
+#
+# Number of key(s) added:        1
+#
+# Now try logging into the machine, with:   "ssh abhinickz@dev"
+# and check to make sure that only the key(s) you wanted were added.
+```
+```bash
+#   bash: check/verify ssh key passphrase:
+ssh-keygen -y
+# Enter file in which the key is (/home/abhinickz/.ssh/dev): /home/abhinickz/.ssh/dev.pub
+# Enter passphrase:
+# ssh-rsa KEYSFORMAT== abhinickz@dev
+```
+```bash
+#   bash: find given directory size:
+du -sh ./test/
+# 12K	./test/
+```
+```bash
+#   bash: get the hidden dir size info:
+ls -aF -1 ~/. | rg '^\.\w+/' | xargs du -sh
+# 1.7G	.cache/
+# 1.3G	.cargo/
+```
+```bash
+#   awk: print if column length is 6.
+awk 'BEGIN{FS="\t"}{ if(NF==6) {print $n}}' test.log
+```
+```bash
+#   awk: get unique lines:
+awk '!seen[$0]++' ~/.bash_history > /tmp/bash_history
+```
+```bash
+#   awk: different field seperator:
+awk '{FS=","} {print $1}' test.log
+```
+```bash
+#   bash: remove Duplicate lines using awk
+for i in 1 2 3 4 5 6 7 8 9 ; do echo $PATH >> /tmp/remove_duplicate_lines.log ; done
+awk '!x[$0]++' /tmp/remove_duplicate_lines.log
+# ABC
+```
+```bash
+#   awk docs.
+# NR==FNR : NR is the current input line number and FNR the current file line number. The two will be equal only while the 1st file is being read.
+```
+```bash
+#   Remove Apache Server SSL Mutex Error:
+ipcs -s  | awk ' { print $2 } ' | grep '[0-9]' | xargs -n 1 ipcrm -s
+```
+```bash
+#   bash: get linux hostname:
+hostname -f
+# test.dev
+```
