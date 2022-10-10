@@ -2430,3 +2430,256 @@ SELECT @@VERSION;
 --  mssql: show DB name:
 SELECT DB_NAME(db_id());
 ```
+```sql
+--  postgres: find tables name ended with "tion": glob pattern
+\d public.*"tion"
+```
+```sql
+--  postgres: get list of fdw servers:
+\des+
+--                                                                  List of foreign servers
+--     Name    |  Owner    | Foreign-data wrapper | Access privileges | Type | Version |                      FDW options            | Description 
+-- ------------+-----------+----------------------+-------------------+------+---------+---------------------------------------------+-------------
+--  dev_server | abhinickz | postgres_fdw         |                   |      |         | (host '0.0.0.0', port '5432', dbname 'dev') | dev_map
+--  int_server | abhinickz | postgres_fdw         |                   |      |         | (host '0.0.0.0', port '5432', dbname 'int') | int_map
+```
+```sql
+--  postgres: get fdw user mappings:
+\deu+
+--                           List of user mappings
+-- ┌────────────┬───────────┬────────────────────────────────────────┐
+-- │   Server   │ User name │                 FDW options            │
+-- ╞════════════╪═══════════╪════════════════════════════════════════╡
+-- │ dev_server │ abhinickz │ ("user" 'abhinickz', password 'XXXXX') │
+-- │ int_server │ abhinickz │ ("user" 'abhinickz', password 'XXXXX') │
+-- └────────────┴───────────┴────────────────────────────────────────┘
+```
+```sql
+-- postgres: create fdw user mapping:
+CREATE USER MAPPING
+FOR PUBLIC
+SERVER dev_server
+OPTIONS (user 'abhinickz', password 'XXXXX');
+```
+```sql
+CREATE USER MAPPING
+FOR PUBLIC
+SERVER int_server
+OPTIONS (user 'abhinickz', password 'XXXXX');
+```
+```sql
+-- postgres: drop fdw user mapping:
+DROP USER MAPPING FOR abhishek SERVER dev_server;
+DROP USER MAPPING FOR abhishek SERVER int_server;
+```
+```sql
+-- postgres: update fdw server mapping port:
+ALTER SERVER dev_server OPTIONS (SET port '5433');
+ALTER SERVER int_server OPTIONS (SET port '5433');
+```
+```sql
+--  postgres: check login info use following command from database command prompt.
+\conninfo
+-- You are connected to database "postgres" as user "postgres" via socket in "/tmp" at port "5432".
+```
+```sql
+--  postgres: create test db:
+CREATE DATABASE test;
+```
+```sql
+--  postgres: create db by copying:
+CREATE DATABASE dev_data WITH TEMPLATE int_data OWNER abhinickz;
+```
+```sql
+--  postgres: create user with password:
+CREATE USER dev_user WITH ENCRYPTED PASSWORD 'XXXXX';
+```
+```sql
+--  postgres: grant access to user for below db:
+GRANT ALL PRIVILEGES ON DATABASE postgres TO dev_user;
+GRANT ALL PRIVILEGES ON database test TO dev_user;
+```
+```sql
+--  postgres: grant create db access.
+ALTER USER dev_user CREATEDB;
+```
+```sql
+--  postgres: grant superUser access to create postgres extension.
+ALTER ROLE dev_user SUPERUSER;
+```
+```sql
+--  postgres: delete user from db.
+DROP OWNED BY dev_user;
+DROP USER dev_user;
+```
+```sql
+--  postgres: copy data and structure but not index and triggers:
+CREATE TABLE tbl_new AS SELECT * FROM tbl_old;
+```
+```sql
+--  postgres: copy data and structure with index, triggers:
+CREATE TABLE newtable LIKE oldtable; 
+INSERT newtable SELECT * FROM oldtable;
+```
+```sql
+-- postgres: create table example:
+CREATE TABLE fruits AS
+SELECT
+    fruits.column1 AS name,
+    fruits.column2 AS quantity
+FROM (
+    VALUES
+    ('apple', 3),
+    ('apple', 2),
+    ('orange', 1),
+    ('grapes', 2),
+    ('grapes', 2),
+    ('watermelon', 3)
+) fruits;
+```
+```sql
+-- postgres: copy table with DEFAULTS, INDEX, CONSTRAINTS: without data:
+CREATE TABLE dev_data_test ( like dev_data INCLUDING DEFAULTS INCLUDING CONSTRAINTS INCLUDING INDEXES );
+```
+```sql
+--  postgres: INSERT OR UPDATE: CONFLICT ON CONSTRAINT:
+INSERT INTO "set_value" (id, instance_val, instance_id)
+SELECT 1, '["dev","int"]' AS instance_val, 1 AS instance_id
+FROM dev_test
+ON CONFLICT ON CONSTRAINT unique_instance_val
+DO UPDATE SET instance_val = EXCLUDED.instance_val
+```
+```sql
+--  postgres: INSERT OR UPDATE: CONFLICT ON column:
+INSERT INTO "set_value" (id, instance_val, instance_id)
+SELECT 1, '["dev","int"]' AS instance_val, 1 AS instance_id
+FROM dev_test
+ON CONFLICT (instance_id)
+DO UPDATE SET instance_val = EXCLUDED.instance_val;
+```
+```sql
+--  postgres: MINUS type operator and UNION:
+SELECT * FROM ( SELECT 1, 2, 3 UNION SELECT 2, 3, 4 UNION SELECT 3, 4, 5 ) qr_1
+EXCEPT
+SELECT * FROM ( SELECT 2, 3, 4 UNION SELECT 1, 2, 3 UNION SELECT 3, 4, 5) qr_2;
+```
+```sql
+--  postgres: random value between column h and l:
+SELECT floor(random() * (h-l+1) + l)::int;
+--  floor
+-- -------
+--      6
+```
+```sql
+-- postgres: NOTICE will not be printed because of STRICT:
+CREATE OR REPLACE FUNCTION add_ten(num int) RETURNS integer AS $$
+BEGIN
+    PERFORM pg_sleep(0.1);
+    RAISE NOTICE 'add_ten called';
+    RETURN num + 10;
+END
+$$ LANGUAGE 'plpgsql' IMMUTABLE STRICT;
+SELECT * FROM add_ten(NULL);
+```
+```sql
+--  postgres: lateral JOIN:
+SELECT
+    serv.id,
+    settings.settings_keys
+FROM servers AS serv
+LEFT JOIN LATERAL (SELECT * FROM JSON_OBJECT_KEYS(serv.settings)) AS settings_keys ON TRUE;
+```
+```sql
+--  postgres: INSERT postgres array:
+INSERT INTO dev_data SELECT 1 AS id, ARRAY['1', '2'] AS dev_id;
+-- INSERT 0 1
+SELECT * FROM dev_data;
+--  id | dev_id
+-- ----+-------
+--   1 | {1,2}
+```
+```sql
+--  postgres: psql: client settings:
+SELECT name, setting FROM pg_settings WHERE category ~ 'Locale';
+--             name            |      setting
+-- ----------------------------+--------------------
+--  client_encoding            | UTF8
+--  DateStyle                  | ISO, MDY
+--  default_text_search_config | pg_catalog.english
+--  extra_float_digits         | 1
+--  IntervalStyle              | postgres
+--  lc_messages                | C
+--  lc_monetary                | C
+--  lc_numeric                 | C
+--  lc_time                    | C
+--  TimeZone                   | UTC
+--  timezone_abbreviations     | Default
+```
+```sql
+--  postgres: get current time zone:
+SELECT current_setting('TIMEZONE');
+--  current_setting
+-- -----------------
+--  UTC
+```
+```sql
+--  postgres: get current epoch time format:
+SELECT EXTRACT(EPOCH FROM NOW())::INT AS EPOCH_NOW;
+--  epoch_now
+-- ------------
+--  1664281499
+```
+```sql
+--  postgres: function to get table info:
+CREATE OR REPLACE FUNCTION dt(tbl_name TEXT)
+RETURNS TABLE (
+    column_name VARCHAR, data_type VARCHAR,character_maximum_length INT
+) AS $$
+SELECT column_name, data_type, character_maximum_length
+FROM INFORMATION_SCHEMA.COLUMNS WHERE lower(table_name) LIKE '%$1%';
+$$
+LANGUAGE 'sql';
+```
+```sql
+--  postgres: check running query:
+SELECT * FROM pg_stat_activity WHERE datname = 'dev_test';
+-- -[ RECORD 1 ]----+--------------------------------
+-- datid            | 12971
+-- datname          | postgres
+-- pid              | 167
+-- leader_pid       |
+-- usesysid         | 10
+-- usename          | postgres
+-- application_name | psql
+-- client_addr      |
+-- client_hostname  |
+-- client_port      | -1
+-- backend_start    | 2022-09-27 12:18:21.7741+00
+-- xact_start       | 2022-09-27 14:07:40.3816+00
+-- query_start      | 2022-09-27 14:07:40.3816+00
+-- state_change     | 2022-09-27 14:07:40.3817+00
+-- wait_event_type  |
+-- wait_event       |
+-- state            | active
+-- backend_xid      |
+-- backend_xmin     | 735
+-- query_id         |
+-- query            | SELECT * FROM pg_stat_activity;
+-- backend_type     | client backend
+```
+```sql
+--  postgres: check autovacuum is running or not:
+SELECT COUNT(*) FROM pg_stat_activity WHERE query LIKE 'autovacuum:%';
+```
+```sql
+--  postgres: function to get table info from column search:
+SELECT column_name, data_type, character_maximum_length
+FROM INFORMATION_SCHEMA.COLUMNS WHERE lower(column_name) LIKE '%id%'
+-- |   table_name  | column_name |  data_type | character_maximum_length|
+-- +-------------- +-------------+------------+-------------------------+
+-- | pg_proc       | oid         | oid        |                         |
+-- | pg_attribute  | attrelid    | oid        |                         |
+-- | pg_class      | oid         | oid        |                         |
+-- | pg_attrdef    | oid         | oid        |                         |
+-- | pg_constraint | conrelid    | oid        |                         |
+```
