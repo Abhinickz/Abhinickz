@@ -707,3 +707,104 @@ tree tmp/ test/
 #   bash: vim comment multiple line range: 66 to 70 (inclusive)
 :66,70s/^/#
 ```
+```bash
+#   bash: vim uncomment multiple line range: 66 to 70 (inclusive)
+:66,70s/^#/
+```
+```bash
+#   diff: get diff between dir:
+diff --brief -r tmp/ test/
+# Only in test: test.log
+```
+```bash
+#   diff: get dir diff files
+diff --brief -Nr dir1/ dir2/
+# Files tmp/test.log and test/test.log differ
+```
+```bash
+#   diff: between the first n lines of 2 files: works only in bash:
+diff < ( head -n 1 /tmp/test1 ) < ( head -n 1 /tmp/test2 )
+```
+```bash
+#   diff: between command and the already written file: "-" gets the standard output here.
+echo -e "2\n3" | diff /tmp/test1 -
+# 1d0
+# < 1
+```
+```bash
+#   bash: script syntax check
+bash -n run.sh
+```
+```bash
+# bash: function to load different postgres service/shard
+function db() {
+    if [ -z "$1" ]
+    then
+        echo "pass args: app1-shard0 OR app1-shard1 OR app1-shard0";
+        . ~/admin-env.sh;
+    else
+        if [ "$1" == "app1-0" ]
+        then
+            echo "connecting app1 shard1";
+            psql service=db-shard1-app1;
+        elif [ "$1" == "app1-1" ]
+        then
+            echo "connecting app1 shard0";
+            psql service=db-shard0-app1;
+        else [ "$1" == "app2-sys-0" ]
+            echo "connecting app2 shard0";
+            psql service=db-shard0-app2;
+        fi
+    fi
+}
+```
+```bash
+#   bash: create symlink:
+ln -s source destination
+ln -s ~/test/original_file shortcut_here
+ln -s -f gcc /usr/bin/gcc
+# shortcut_here ->~/test/original_file
+```
+```bash
+#   time of any linux process:
+time perl test.pl
+# real	0m0.091s
+# user	0m0.071s
+# sys	0m0.020s
+```
+```bash
+#   bash: creates/updates a database used by locate:
+sudo updatedb
+```
+```bash
+#   bash: locate file in current folder:
+locate "$(pwd)/*.pl"
+```
+```bash
+#   bash: get unique lines:
+sort combined_mapped_metadata.dat | uniq -c
+```
+```bash
+#   bash: get only duplicate lines
+sort test_file | uniq -d
+```
+```bash
+#   bash: run sh file:
+sh +x do_work.sh
+```
+```bash
+#   bash: shuffle/randomize files content linewise:
+shuf test.log
+cat test.log | sort -R
+```
+```bash
+#   bash: run a command for a limited time:
+timeout 10s ./script.sh
+#   bash: restart every 30m:
+while true; do timeout 30m ./script.sh; done
+```
+```bash
+#   bash: split long file in files with same number of lines(1):
+split -l 2 -d test.pl output_prefix
+# output_prefix00  output_prefix01  output_prefix02  output_prefix03  output_prefix04  output_prefix05  output_prefix06  output_prefix07
+```
