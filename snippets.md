@@ -1620,3 +1620,102 @@ psql -Atc "select tablename from pg_tables where schemaname='$SCHEMA'" $DB |\
 # and pg_proctab extension installed on the host 
 pg_top -r -h host_name -p 5433 -d db_name
 ```
+```bash
+#   Minute      Hour        Day of Month    Month               Day of Week         Command
+#   (0-59)      (0-23)      (1-31)          (1-12 or Jan-Dec)   (0-6 or Sun-Sat)    perl script.pl
+#   cronjob run at 9 AM everyday.
+0 9 * * *
+#   cronjob run at 7 AM everyday.
+0 7 * * 1
+```
+```bash
+#   perl: install locally downloaded module:
+tar zxf Digest-SHA1-2.13.tar.gz
+cd Digest-SHA1-2.13
+perl Makefile.PL
+make
+make test           # skip it if test is failing due to some admin rights!
+make install
+```
+```bash
+#   perl: perltidy: format and modify test.pl and backup the originals to test.pl.bak 
+perltidy -b -bext='/' test.pl
+```
+```bash
+#   perl: get module installed path:
+perldoc -l Data::Dumper
+# /usr/lib/aarch64-linux-gnu/perl/5.32/Data/Dumper.pm
+```
+```bash
+#   perl: corelist modules changes according to perl version:
+corelist --diff 5.32.0 5.32.1
+# B::Op_private                         5.032000   5.032001
+# Config                                   5.032   5.032001
+# Data::Dumper                             2.174   2.174_01
+# DynaLoader                                1.47    1.47_01
+# ExtUtils::Liblist::Kid                    7.44    7.44_01
+# Module::CoreList                    5.20200620 5.20210123
+# Module::CoreList::Utils             5.20200620 5.20210123
+# Opcode                                    1.47       1.48
+# Safe                                      2.41    2.41_01
+# Win32API::File::inc::ExtUtils::Myconst2perl   (absent)          1
+```
+```bash
+#   perl: print module path/version/installed
+cpan -D Term::ReadLine::Perl
+# Reading '/home/abhinickz/.cpan/Metadata'
+# 	Database was generated on Tue, 18 Dec 2018 10:41:03 GMT
+# Term::ReadLine::Perl
+# -------------------------------------------------------------------------
+# 	(no description)
+# 	I/IL/ILYAZ/modules/Term-ReadLine-Perl-1.0303.tar.gz
+# 	/usr/local/share/perl/5.26.2/Term/ReadLine/Perl.pm
+# 	Installed: 1.0303
+# 	CPAN:      1.0303  up to date
+# 	Ilya Zakharevich (ILYAZ)
+# 	cpan@ilyaz.org
+```
+```bash
+#   perl: cpan: upgrade all CPAN modules:
+cpan upgrade /(.*)/
+```
+```bash
+#   perl: cpan: force module install without running test:
+cpan -T install Term::ReadLine::Perl
+```
+```bash
+#   perl: cpan: configure proxy settings:
+o conf init /proxy/
+ftp://http_ip:8080
+ftp://https_ip:80
+http://http_ip:8080
+http://https_ip:80
+o conf commit
+```
+```bash
+#   perl: cpan: sudo cpan failes with permission error:
+o conf make_install_make_command 'sudo make'
+```
+```bash
+#   perl: cpan: no access for /usr/bin change dir to /usr/local/bin
+o conf makepl_arg "INSTALLBIN=/usr/local/bin INSTALLSCRIPT=/usr/local/bin"
+o conf commit
+```
+```bash
+#   perl: prove: unit testing parallel:
+prove -r -j 8 t/
+```
+```bash
+#   perl: get @INC:
+#   awk: get all records after some regexp(INC:):
+perl -V | awk 'f;/INC:/{f=1}'
+#    /etc/perl
+#    /usr/local/lib/aarch64-linux-gnu/perl/5.32.1
+#    /usr/local/share/perl/5.32.1
+#    /usr/lib/aarch64-linux-gnu/perl5/5.32
+#    /usr/share/perl5
+#    /usr/lib/aarch64-linux-gnu/perl-base
+#    /usr/lib/aarch64-linux-gnu/perl/5.32
+#    /usr/share/perl/5.32
+#    /usr/local/lib/site_perl
+```
