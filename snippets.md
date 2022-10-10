@@ -2868,3 +2868,306 @@ SELECT *, pg_size_pretty(total_bytes) AS total
 SELECT nextval('dev_data_id_seq');
 SELECT setval('dev_data_id_seq', (SELECT MAX(id) FROM dev_data) + 1);
 ```
+```sql
+-- mysql: get db hostname:
+SELECT @@hostname;
+-- +------------------------+
+-- | @@hostname             |
+-- +------------------------+
+-- | abhinickz.test.dev     |
+-- +------------------------+
+```
+```sql
+--  mysql: show tables in different DB:
+SHOW TABLES IN db_name like '%rep_worklog%';
+```
+```sql
+--  mysql: get table with comments:
+SELECT TABLE_SCHEMA, TABLE_NAME, TABLE_COMMENT FROM information_schema.TABLES where TABLE_COMMENT <> '';
+-- +--------------+-----------------+-----------------------------------------------------+
+-- | TABLE_SCHEMA | TABLE_NAME      | TABLE_COMMENT                                       |
+-- +--------------+-----------------+-----------------------------------------------------+
+-- | dev          | test_type       | Contains a user link-type used in linked_dev table  |
+-- | dev          | linked_dev      | User link between dev DB and 3rd party app          |
+-- | dev          | intg_time_type  | Look up table for intg                              |
+-- +--------------+-----------------+-----------------------------------------------------+
+```
+```sql
+--  mysql: show temporary session like tables:
+SHOW TABLES FROM INFORMATION_SCHEMA LIKE 'INNODB_TEMP%';
+```
+```sql
+--  mysql: get hosts for all incoming requests/running queries:
+SELECT host FROM information_schema.processlist;
+mysqladmin -u root -p processlist
+-- Enter password:
+-- +----+------+-----------+----+---------+------+----------+------------------+
+-- | Id | User | Host      | db | Command | Time | State    | Info             |
+-- +----+------+-----------+----+---------+------+----------+------------------+
+-- | 7  | root | localhost |    | Query   | 0    | starting | show processlist |
+-- +----+------+-----------+----+---------+------+----------+------------------+
+```
+```sql
+--  mysql: duplicate column having X no of count:
+SELECT column_name,
+    COUNT(column_name_1)
+FROM TABLE
+GROUP BY column_name
+HAVING COUNT(column_name_1) > 1;
+```
+```sql
+--  mysql: check db encoding:
+SELECT schema_name 'database', default_character_set_name 'charset', default_collation_name 'collation' FROM INFORMATION_SCHEMA.schemata WHERE schema_name = 'test';
+-- +----------+---------+-------------------+
+-- | database | charset | collation         |
+-- +----------+---------+-------------------+
+-- | test     | latin1  | latin1_swedish_ci |
+-- +----------+---------+-------------------+
+```
+```sql
+--  mysql: get db encoding:
+use db_name;
+SELECT @@character_set_database;
+-- +--------------------------+
+-- | @@character_set_database |
+-- +--------------------------+
+-- | latin1                   |
+-- +--------------------------+
+```
+```sql
+--  mysql: get db size(MB):
+SELECT
+    table_schema "DB Name",
+    Round(Sum(data_length + index_length) / 1024 / 1024, 1) "DB Size in MB"
+FROM information_schema.tables
+GROUP BY table_schema;
+-- +--------------------+---------------+
+-- | DB Name            | DB Size in MB |
+-- +--------------------+---------------+
+-- | dev                |         165.1 |
+-- +--------------------+---------------+
+```
+```sql
+--  mysql: fix replication process:
+STOP SLAVE;
+START SLAVE;
+CHANGE MASTER TO MASTER_HOST = 'dev_host', MASTER_USER = 'repl_user', MASTER_PASSWORD = 'XXXXX', MASTER_LOG_FILE = 'binlog.00420', MASTER_LOG_POS = 0420;
+```
+```sql
+--  mysql: Include this line in DB ctl file to change encoding to latin1:
+-- CHARACTERSET 'WE8ISO8859P1'
+```
+```sql
+--  mysql: create table and insert data: example:
+CREATE TABLE `amount` (
+    `id`                    INTEGER(5) UNSIGNED AUTO_INCREMENT,
+    `created_at`            DATETIME DEFAULT NULL,
+    `updated_at`            TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `value`                 INTEGER(12) UNSIGNED,
+    `dev_name`              VARCHAR(250),
+    `due_date`              DATETIME DEFAULT NULL,
+    PRIMARY KEY (id)
+);
+INSERT INTO `amount` (value, dev_name) SELECT 55555, 'abhinickz';
+```
+```sql
+--  mysql: now minus min example:
+SELECT NOW() - INTERVAL 10 MINUTE AS 10MINAGO, NOW() AS NOW;
+-- +---------------------+---------------------+
+-- | 10MINAGO            | NOW                 |
+-- +---------------------+---------------------+
+-- | 2018-05-02 07:32:18 | 2018-05-02 07:42:18 |
+-- +---------------------+---------------------+
+```
+```sql
+--  mysql: prompt with color:
+-- export MYSQL_PS1="$(echo -e '\033[1;32mmysql \d> \033[0m')";
+-- mysql: prompt format to "mysql[selected_db_name]>"
+-- prompt mysql[\d]>\_
+```
+```sql
+--  mysql: export data to file with console:
+SELECT * FROM test INTO OUTFILE '/tmp/dbi.data';
+```
+```sql
+--  mysql: find user:
+SELECT * FROM MYSQL.user;
+```
+```sql
+--  mysql: create user:
+CREATE USER 'abhinickz' IDENTIFIED BY 'XXXXXX';
+```
+```sql
+--  mysql: different examples loading data to table:
+LOAD DATA INFILE '/tmp/TEST.data' INTO TABLE test CHARACTER SET utf8 FIELDS TERMINATED BY "\t" ENCLOSED BY 'þ';
+LOAD DATA LOCAL INFILE '/tmp/test.csv' INTO TABLE stats_date_range;
+LOAD DATA INFILE '/tmp/test.csv' INTO TABLE stats_date_range;
+```
+```sql
+--  postgres: CASE syntax:
+SELECT
+    meta_id,
+    (CASE WHEN string_value = 'abhinickz, DEV' THEN 1 ELSE 2 END ) number_value,
+    (CASE WHEN string_value = 'abhinickz, INT' THEN 'INT' ELSE 'DEV' END ) string_value
+FROM postgres_test;
+```
+```sql
+--  postgres: check progress:
+SELECT ROUND( ( COUNT(*) / 3727241 ) * 100, 2 ) || '% done'
+FROM abhinickz_dev;
+```
+```sql
+--  postgres: EXPLAIN with ANALYZE and COSTS parameters With YAML param format:
+EXPLAIN ( ANALYZE TRUE, COSTS TRUE, BUFFERS TRUE, FORMAT YAML ) 
+SELECT 1;
+--            QUERY PLAN
+-- --------------------------------
+--  - Plan:                       +
+--      Node Type: "Result"       +
+--      Parallel Aware: false     +
+--      Async Capable: false      +
+--      Startup Cost: 0.00        +
+--      Total Cost: 0.01          +
+--      Plan Rows: 1              +
+--      Plan Width: 4             +
+--      Actual Startup Time: 0.002+
+--      Actual Total Time: 0.004  +
+--      Actual Rows: 1            +
+--      Actual Loops: 1           +
+--      Shared Hit Blocks: 0      +
+--      Shared Read Blocks: 0     +
+--      Shared Dirtied Blocks: 0  +
+--      Shared Written Blocks: 0  +
+--      Local Hit Blocks: 0       +
+--      Local Read Blocks: 0      +
+--      Local Dirtied Blocks: 0   +
+--      Local Written Blocks: 0   +
+--      Temp Read Blocks: 0       +
+--      Temp Written Blocks: 0    +
+--    Planning:                   +
+--      Shared Hit Blocks: 3      +
+--      Shared Read Blocks: 0     +
+--      Shared Dirtied Blocks: 0  +
+--      Shared Written Blocks: 0  +
+--      Local Hit Blocks: 0       +
+--      Local Read Blocks: 0      +
+--      Local Dirtied Blocks: 0   +
+--      Local Written Blocks: 0   +
+--      Temp Read Blocks: 0       +
+--      Temp Written Blocks: 0    +
+--    Planning Time: 0.045        +
+--    Triggers:                   +
+--    Execution Time: 0.033
+```
+```sql
+--  postgres: index tip:
+-- Indexes can only be used from left to right side. If the first index column is not in the where clause, the index is of little help.
+```
+```sql
+--  postgres: create hot cache:
+CREATE EXTENSION pg_prewarm;
+SELECT pg_prewarm( 'data_dev' );
+```
+```sql
+--  postgres: lock serially for each request:
+SELECT pg_advisory_lock(123);
+--  postgres: try or fail:
+SELECT pg_try_advisory_lock(123);
+--  postgres: unlock:
+SELECT pg_advisory_unlock(123); 
+```
+```sql
+--  postgres: check locks:
+SELECT * FROM pg_locks;
+-- ┌────────────┬──────────┬──────────┬──────┬───────┬────────────┬───────────────┬─────────┬───────┬──────────┬────────────────────┬─────┬─────────────────┬─────────┬──────────┐
+-- │  locktype  │ database │ relation │ page │ tuple │ virtualxid │ transactionid │ classid │ objid │ objsubid │ virtualtransaction │ pid │      mode       │ granted │ fastpath │
+-- ╞════════════╪══════════╪══════════╪══════╪═══════╪════════════╪═══════════════╪═════════╪═══════╪══════════╪════════════════════╪═════╪═════════════════╪═════════╪══════════╡
+-- │ relation   │  2341869 │    12143 │ NULL │  NULL │ NULL       │          NULL │    NULL │  NULL │     NULL │ 7/310              │ 815 │ AccessShareLock │ t       │ t        │
+-- │ virtualxid │     NULL │     NULL │ NULL │  NULL │ 7/310      │          NULL │    NULL │  NULL │     NULL │ 7/310              │ 815 │ ExclusiveLock   │ t       │ t        │
+-- │ advisory   │  2341869 │     NULL │ NULL │  NULL │ NULL       │          NULL │       0 │    12 │        1 │ 7/310              │ 815 │ ExclusiveLock   │ t       │ f        │
+-- │ advisory   │  2341869 │     NULL │ NULL │  NULL │ NULL       │          NULL │       0 │   123 │        1 │ 7/310              │ 815 │ ExclusiveLock   │ t       │ f        │
+-- └────────────┴──────────┴──────────┴──────┴───────┴────────────┴───────────────┴─────────┴───────┴──────────┴────────────────────┴─────┴─────────────────┴─────────┴──────────┘
+```
+```sql
+--  postgres: DROP FUNCTION: get all function:
+SELECT 'DROP FUNCTION ' || oid::regprocedure FROM pg_proc WHERE proname = 'cal_data' AND pg_function_is_visible(oid);
+-- DROP FUNCTION cal_data(smallint,integer);
+-- DROP FUNCTION cal_data(smallint,integer,text);
+```
+```sql
+--  postgres: DROP all FUNCTION:
+CREATE OR REPLACE FUNCTION data.delete_all_functions(schema_in TEXT)
+    RETURNS VOID AS
+$$
+DECLARE
+    qry TEXT;
+
+BEGIN
+    SELECT INTO qry string_agg(
+       format(
+          CASE WHEN proname = 'delete_all_functions' THEN '-- %s;' -- don't delete self
+               WHEN proisagg THEN 'drop aggregate if exists %s cascade;'
+               ELSE 'drop function if exists %s cascade;'
+             END,
+          oid :: regprocedure
+          ),
+       E'\n'
+        )
+    FROM pg_proc
+    WHERE pronamespace = schema_in :: regnamespace;
+
+    IF qry IS NOT NULL THEN
+        EXECUTE qry;
+        RAISE NOTICE 'deleted all functions in schema: %', schema_in;
+    ELSE
+        RAISE NOTICE 'no functions to delete in schema: %', schema_in;
+    END IF;
+END
+$$
+LANGUAGE plpgsql;
+```
+```sql
+--  postgres: convert column to string:
+SELECT string_agg(id::TEXT, ', ') FROM ids;
+```
+```sql
+--  postgres: check hot/cold cache buffer:
+CREATE EXTENSION pg_buffercache;
+```
+```sql
+--  postgres: DB wise cache:
+SELECT
+    CASE WHEN c.reldatabase IS NULL THEN ''
+    WHEN c.reldatabase = 0 THEN ''
+    ELSE d.datname
+    END AS database,
+    count(*) AS cached_blocks
+FROM pg_buffercache AS c
+LEFT JOIN pg_database AS d ON c.reldatabase = d.oid
+GROUP BY d.datname, c.reldatabase
+ORDER BY d.datname, c.reldatabase;
+-- ┌───────────────────────────────┐
+-- │   database    │ cached_blocks │
+-- ╞═══════════════╪═══════════════╡
+-- │ abhinickz_int │           149 │
+-- │ abhinickz_dev │            88 │
+-- └───────────────────────────────┘
+```
+```sql
+--  postgres: TABLE wise cache:
+SELECT
+    c.relname, c.relkind, count(*)
+FROM pg_database AS a, pg_buffercache AS b, pg_class AS c
+WHERE c.relfilenode = b.relfilenode
+AND b.reldatabase = a.oid
+AND c.oid >= 16384
+AND a.datname = 'abhinickz_int'
+GROUP BY 1, 2
+ORDER BY 3 DESC, 1 LIMIT 5;
+-- ┌──────────┬─────────┬───────┐
+-- │ relname  │ relkind │ count │
+-- ╞══════════╪═════════╪═══════╡
+-- │ user     │ r       │    28 │
+-- └──────────┴─────────┴───────┘
+```
+---
