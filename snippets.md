@@ -2683,3 +2683,188 @@ FROM INFORMATION_SCHEMA.COLUMNS WHERE lower(column_name) LIKE '%id%'
 -- | pg_attrdef    | oid         | oid        |                         |
 -- | pg_constraint | conrelid    | oid        |                         |
 ```
+```sql
+--  postgres: formatted columns names:
+SELECT
+    '"' || string_agg(column_name, '", "') || '"' AS column_names
+FROM (
+    SELECT
+        column_name
+    FROM information_schema.columns
+    WHERE table_catalog = (SELECT current_database())
+        AND table_name = 'table_name'
+    ORDER BY ordinal_position 
+) sq;
+-- -[ RECORD 1 ]+-----------------------------------------
+-- column_names | "oid", "umoptions", "umuser", "srvowner"
+```
+```sql
+--  postgres: db creation time:
+SELECT (pg_stat_file('base/'||oid ||'/PG_VERSION')).modification, datname FROM pg_database WHERE datname = 'dev';
+--        modification        | datname
+-- ---------------------------+---------
+--  2022-03-26 19:48:10+05:30 | dev
+```
+```sql
+--  postgres: copy any query data to csv:
+\COPY(SELECT * FROM table_name) To '/tmp/table_data.csv' With CSV DELIMITER ',' HEADER;
+```
+```sql
+--  postgres: copy whole table_name data to csv:
+COPY table_name FROM '/tmp/table_data.csv' WITH (FORMAT csv);
+```
+```sql
+--  postgres: VACUUM DB with verbose:
+VACUUM(FULL, ANALYZE, VERBOSE);
+VACUUM(FULL, ANALYZE, VERBOSE) table_name;
+-- INFO:  vacuuming "public.test"
+-- INFO:  "test": found 0 removable, 0 nonremovable row versions in 0 pages
+-- DETAIL:  0 dead row versions cannot be removed yet.
+-- CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s.
+-- INFO:  analyzing "public.test"
+-- INFO:  "test": scanned 0 of 0 pages, containing 0 live rows and 0 dead rows; 0 rows in sample, 0 estimated total rows
+-- VACUUM
+```
+```sql
+--  postgres: dead tuples:
+SELECT relname, n_dead_tup FROM pg_stat_user_tables WHERE n_dead_tup > 0 ORDER BY n_dead_tup DESC;
+--  relname  | n_dead_tup
+-- ----------+------------
+--  dev_data |      23918
+```
+```sql
+--  postgres: last vacuum date:
+SELECT relname, last_vacuum, last_autovacuum FROM pg_stat_user_tables WHERE last_autovacuum IS NOT NULL ORDER BY last_autovacuum DESC;
+--  relname  | last_vacuum |         last_autovacuum
+-- ----------+-------------+----------------------------------
+--  dev_data | NULL        | 2022-07-09 12:13:40.563925+05:30
+```
+```sql
+--  postgres: debug: use variable value:
+\set epoch_now '(SELECT EXTRACT (EPOCH FROM NOW())::INT AS epoch_now);'
+SELECT :epoch_now;
+-- 1664292774
+```
+```sql
+--  postgres: build JSON object:
+SELECT json_build_object('id', id, 'json_data', my_json_field::jsonb, 'type', 'my_type')::jsonb FROM my_data;
+```
+```sql
+--  postgres: add JSONB key/value:
+UPDATE
+    dev_data
+SET
+    meta_data = meta_data::jsonb || ' { "user" : "abhinickz" }'::jsonb
+WHERE id= 1;
+```
+```sql
+--  postgres: temp table:
+BEGIN; -- start transaction
+CREATE TEMPORARY TABLE temp_table_test ON COMMIT DROP AS SELECT 1;
+SELECT * from temp_table_test;
+COMMIT; -- drops the temp table
+SELECT * from temp_table_test;
+-- ERROR:  relation "temp_table_test" does not exist
+-- LINE 1: SELECT * from temp_table_test;
+```
+```sql
+--  postgres: kill running query
+SELECT pg_cancel_backend( procpid );
+```
+```sql
+--  postgres: kill idle query
+SELECT pg_terminate_backend( procpid );
+```
+```sql
+--  postgres: all database users
+SELECT * FROM pg_stat_activity where current_query not like '<%';
+```
+```sql
+--  postgres: all databases and their sizes
+SELECT * FROM pg_user;
+-- -[ RECORD 1 ]+---------
+-- usename      | postgres
+-- usesysid     | 10
+-- usecreatedb  | t
+-- usesuper     | t
+-- userepl      | t
+-- usebypassrls | t
+-- passwd       | ********
+-- valuntil     |
+-- useconfig    |
+```
+```sql
+--  postgres: all tables and their size, with/without indexes
+SELECT datname, pg_size_pretty(pg_database_size(datname))
+FROM pg_database
+order by pg_database_size(datname) desc;
+```
+```sql
+--  postgres: cache hit rates (should not be less than 0.99)
+SELECT sum(heap_blks_read) as heap_read, sum(heap_blks_hit)  as heap_hit, (sum(heap_blks_hit) - sum(heap_blks_read)) / sum(heap_blks_hit) as ratio
+FROM pg_statio_user_tables;
+--  heap_read | heap_hit |          ratio
+-- -----------+----------+-------------------------
+--          3 |        2 | -0.50000000000000000000
+```
+```sql
+--  postgres: table index usage rates (should not be less than 0.99)
+SELECT relname, 100 * idx_scan / (seq_scan + idx_scan) percent_of_times_index_used, n_live_tup rows_in_table
+FROM pg_stat_user_tables 
+ORDER BY n_live_tup DESC;
+--  relname | percent_of_times_index_used | rows_in_table
+-- ---------+-----------------------------+---------------
+--  dev     |                             |             6
+```
+```sql
+--  postgres: how many indexes are in cache
+SELECT sum(idx_blks_read) as idx_read, sum(idx_blks_hit)  as idx_hit, (sum(idx_blks_hit) - sum(idx_blks_read)) / sum(idx_blks_hit) as ratio
+FROM pg_statio_user_indexes;
+
+--  postgres: pretty json:
+SELECT jsonb_pretty('{"cur_date": "2022-07-23 23:59:59","day_diff": 30 }');
+--               jsonb_pretty
+-- ----------------------------------------
+--  {                                     +
+--      "cur_date": "2020-11-23 23:59:59",+
+--      "day_diff": 30                    +
+--  }
+```
+```sql
+--  postgres: get table/index size:
+SELECT *, pg_size_pretty(total_bytes) AS total
+    , pg_size_pretty(index_bytes) AS index
+    , pg_size_pretty(toast_bytes) AS toast
+    , pg_size_pretty(table_bytes) AS table
+  FROM (
+  SELECT *, total_bytes-index_bytes-coalesce(toast_bytes,0) AS table_bytes FROM (
+      SELECT c.oid,nspname AS table_schema, relname AS table_name
+              , c.reltuples AS row_estimate
+              , pg_total_relation_size(c.oid) AS total_bytes
+              , pg_indexes_size(c.oid) AS index_bytes
+              , pg_total_relation_size(reltoastrelid) AS toast_bytes
+          FROM pg_class c
+          LEFT JOIN pg_namespace n ON n.oid = c.relnamespace
+          WHERE relkind = 'r'
+          AND nspname = 'public'
+  ) a
+) a;
+-- -[ RECORD 1 ]+-----------
+-- oid          | 16388
+-- table_schema | public
+-- table_name   | dev_data
+-- row_estimate | 6
+-- total_bytes  | 16384
+-- index_bytes  | 0
+-- toast_bytes  | 8192
+-- table_bytes  | 8192
+-- total        | 16 kB
+-- index        | 0 bytes
+-- toast        | 8192 bytes
+-- table        | 8192 bytes
+```
+```sql
+--  postgres: check and fix postgres id sequence:
+SELECT nextval('dev_data_id_seq');
+SELECT setval('dev_data_id_seq', (SELECT MAX(id) FROM dev_data) + 1);
+```
