@@ -808,3 +808,103 @@ while true; do timeout 30m ./script.sh; done
 split -l 2 -d test.pl output_prefix
 # output_prefix00  output_prefix01  output_prefix02  output_prefix03  output_prefix04  output_prefix05  output_prefix06  output_prefix07
 ```
+```bash
+#   bash: create empty file with given size:
+fallocate -l 1G test.img
+```
+```bash
+#   bash: monitor progress in terms of generated output:
+#   write random data, encode in base64, monitor progress to /dev/null
+# pv options:
+#   -l,  lines
+#   -b,  total counter
+#   -r,  show rate
+#   -i2, refresh every 2 seconds
+cat /dev/urandom | base64 | pv -lbri2 > /dev/null
+# 16.2M [2.03M/s]
+```
+```bash
+#   bash: colorize everything:
+locate '' | head -500 | lolcat
+```
+```bash
+#   bash: check color/style support:
+for i in {30..37} {40..47} {90..97} {100..107}; do for j in {0..5}; do echo -n " color => \033["$j";"$i"m " ; echo -e "   \033["$j";"$i"m   color testing in BASH \033[0m  "; done; done
+```
+```bash
+#   bash: multiline support with newline and file redirect:
+cat > test.txt <<- EOM
+Line 1.
+Line 2.
+EOM
+```
+```bash
+#   bash: tidy xml:
+cat filename.xml | tidy -xml -iq
+```
+```bash
+#   bash: bat: hide default number and pager:
+bat test.json -pp
+```
+```bash
+#   bash: ld dynamic linking failed debug:
+ld -lzlib --verbose
+# ==================================================
+# attempt to open /usr/x86_64-linux-gnu/lib64/libzlib.so failed
+# attempt to open /usr/x86_64-linux-gnu/lib64/libzlib.a failed
+# attempt to open /usr/local/lib64/libzlib.so failed
+# attempt to open /usr/local/lib64/libzlib.a failed
+# attempt to open /lib64/libzlib.so failed
+# attempt to open /lib64/libzlib.a failed
+# attempt to open /usr/lib64/libzlib.so failed
+# attempt to open /usr/lib64/libzlib.a failed
+# attempt to open /usr/x86_64-linux-gnu/lib/libzlib.so failed
+# attempt to open /usr/x86_64-linux-gnu/lib/libzlib.a failed
+# attempt to open /usr/local/lib/libzlib.so failed
+# attempt to open /usr/local/lib/libzlib.a failed
+# attempt to open /lib/libzlib.so failed
+# attempt to open /lib/libzlib.a failed
+# attempt to open /usr/lib/libzlib.so failed
+# attempt to open /usr/lib/libzlib.a failed
+# /usr/bin/ld.bfd.real: cannot find -lzlib
+```
+```bash
+#   bash: wget: get file size only:
+wget --spider https://static.crates.io/db-dump.tar.gz
+# Spider mode enabled. Check if remote file exists.
+# --2022-09-23 12:15:13--  https://static.crates.io/db-dump.tar.gz
+# Resolving static.crates.io (static.crates.io)... 13.226.175.48, 13.226.175.94, 13.226.175.127, ...
+# Connecting to static.crates.io (static.crates.io)|13.226.175.48|:443... connected.
+# HTTP request sent, awaiting response... 200 OK
+# Length: 235835914 (225M) [application/gzip]
+# Remote file exists.
+```
+```bash
+#   bash: spell: check linux
+aspell check --sug-mode=bad-spellers -d en_US file_name.fl
+```
+```bash
+#   bash: spell: check alias for better input:
+#   bash: spell: check example:
+alias spell='function _spell(){ echo "$1" | aspell -a;};_spell'
+spell abhishek
+# @(#) International Ispell Version 3.1.20 (but really Aspell 0.60.8)
+# & abhishek 7 0: abolished, abolishes, abashed, abashes, abridge, abolish, abash
+```
+```bash
+#   bash: pdf: change PDF file to image file:
+convert -geometry 1600x1600 -density 200x200 -quality 100 file.pdf file.jpg
+```
+```bash
+#   bash: image: resize:
+convert -resize 150% old.jpg resized.jpg
+```
+```bash
+#   bash: image: change dpi:
+convert -units PixelsPerInch old.png -density 300 resized_dpi.png
+```
+```bash
+#   bash: image: convert image to text: ocr (.txt will be appended to text file:)
+tesseract source.png destination
+tesseract get_file_downloading.png get_file_downloading
+```
