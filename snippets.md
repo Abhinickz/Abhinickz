@@ -302,3 +302,105 @@ mkdir -p 2022-0{1,2,3,4,5,6,7,8,9}-{10,15,19,20,21,26,04}
 # 2022-01-19 2022-02-10 2022-02-26 2022-03-20 2022-04-15 2022-05-04 2022-05-21 2022-06-19 2022-07-10 2022-07-26 2022-08-20 2022-09-15
 # 2022-01-20 2022-02-15 2022-03-04 2022-03-21 2022-04-19 2022-05-10 2022-05-26 2022-06-20 2022-07-15 2022-08-04 2022-08-21 2022-09-19
 ```
+```bash
+#    bash: nice trace route:
+mtr abhasker_dev_test
+# pi (192.168.1.5) -> 192.168.1.69                2022-10-05T21:51:12+0530
+# Keys:  Help   Display mode   Restart statistics   Order of fields   quit
+#                              Packets               Pings
+#  Host                        Loss%   Snt   Last   Avg  Best  Wrst StDev
+#  1. abhasker_dev_test        0.0%    15    0.5   0.5   0.4   0.7   0.1
+```
+```bash
+#   bash: create empty socket file:
+nc -lkU /tmp/test.sock
+# srwxr-xr-x 1 dev   dev      0 Oct  5 22:33 test.sock
+```
+```bash
+#   bash: Check available TLS version:
+openssl ciphers -v | awk '{ print $2 }' | sort | uniq
+# SSLv3
+# TLSv1
+# TLSv1.2
+# TLSv1.3
+```
+```bash
+#   bash: sqlite: pihole delete arpa results manually:
+sudo sqlite3 pihole-FTL.db "DELETE FROM query_storage WHERE domain IN (SELECT id FROM domain_by_id WHERE domain LIKE '%addr.arpa%');"
+```
+```bash
+#   bash: sort numerically:
+sort -n file_name
+```
+```bash
+#   bash: sort human readable format in desc order: 1G, 1M, 1K:
+sort -hr file_name
+```
+```bash
+#   bash: cvs: steps for creating CVS patch:
+cd src/dev_trunk
+cvs st file_name
+csv diff file_name_1 file_name_2 >> bug_number.patch
+```
+```bash
+#   bash: cvs commit log greater than date:
+cvs -z9 log -d > 2003-8-14
+```
+```bash
+# convert m4a to mp3: -q:a 2 (0-9) lower means high quality:
+ffmpeg -i ~/input.m4a -c:v copy -c:a libmp3lame -q:a 0 output.mp3
+# ffmpeg version 5.1.2 Copyright (c) 2000-2022 the FFmpeg developers
+#   built with Apple clang version 14.0.0 (clang-1400.0.29.102)
+#   configuration: --prefix=/usr/local/Cellar/ffmpeg/5.1.2 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags= --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libbluray --enable-libdav1d --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox
+#   libavutil      57. 28.100 / 57. 28.100
+#   libavcodec     59. 37.100 / 59. 37.100
+#   libavformat    59. 27.100 / 59. 27.100
+#   libavdevice    59.  7.100 / 59.  7.100
+#   libavfilter     8. 44.100 /  8. 44.100
+#   libswscale      6.  7.100 /  6.  7.100
+#   libswresample   4.  7.100 /  4.  7.100
+#   libpostproc    56.  6.100 / 56.  6.100
+# Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/Users/abhinickz/input.m4a':
+#   Metadata:
+#     major_brand     : M4A
+#     minor_version   : 0
+#     compatible_brands: M4A isommp42
+#     creation_time   : 2022-10-01T16:44:11.000000Z
+#     title           : New Recording
+#     voice-memo-uuid : B04D8C3D-8188-43E7-8E91-B5E95A7754E0
+#     encoder         : com.apple.VoiceMemos (abhinickz-mac (null))
+#   Duration: 00:21:15.40, start: 0.000000, bitrate: 68 kb/s
+#   Stream #0:0[0x1](und): Audio: aac (LC) (mp4a / 0x6134706D), 48000 Hz, mono, fltp, 64 kb/s (default)
+#     Metadata:
+#       creation_time   : 2022-10-01T16:44:11.000000Z
+#       handler_name    : Core Media Audio
+#       vendor_id       : [0][0][0][0]
+# Stream mapping:
+#   Stream #0:0 -> #0:0 (aac (native) -> mp3 (libmp3lame))
+# Press [q] to stop, [?] for help
+# Output #0, mp3, to 'output.mp3':
+#   Metadata:
+#     major_brand     : M4A
+#     minor_version   : 0
+#     compatible_brands: M4A isommp42
+#     voice-memo-uuid : B04D8C3D-8188-43E7-8E91-B5E95A7754E0
+#     TIT2            : New Recording
+#     TSSE            : Lavf59.27.100
+#   Stream #0:0(und): Audio: mp3, 48000 Hz, mono, fltp (default)
+#     Metadata:
+#       creation_time   : 2022-10-01T16:44:11.000000Z
+#       handler_name    : Core Media Audio
+#       vendor_id       : [0][0][0][0]
+#       encoder         : Lavc59.37.100 libmp3lame
+# size=   19549kB time=00:21:15.45 bitrate= 125.6kbits/s speed= 134x
+# video:0kB audio:19549kB subtitle:0kB other streams:0kB global headers:0kB muxing overhead: 0.002113%
+```
+```bash
+#   bash: redis: monitor mode: (password: XXXXXX)
+redis-cli -a XXXXXX monitor
+```
+```bash
+#   bash: rsync: flag: -r recursive, -z compress, -P progress, -e execute 'ssh ' due to different ssh port, --delete to delete remote files if local one is deleted:
+#   bash: rsync: sync server dir to lcoal without overwrting existing files:
+rsync -rvz -e 'ssh -p 5050' --progress --ignore-existing abhinickz@dev:/tmp/test/. /home/abhinickz/test/.
+```
