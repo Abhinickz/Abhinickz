@@ -1008,3 +1008,106 @@ ipcs -s  | awk ' { print $2 } ' | grep '[0-9]' | xargs -n 1 ipcrm -s
 hostname -f
 # test.dev
 ```
+```bash
+#   bash: count unique word space seperated
+echo "1 2" | tr " " "\n" | uniq | wc -l
+```
+```bash
+#   bash: prepend line number:
+echo -e "A\nB" | nl
+#  1	A
+#  2	B
+```
+```bash
+#   bash: ?
+echo dev | tr 'abcdefghijklmnopqrstuvwxyz_' '0123456789012345678901234567' | cut -c 2-6 | sed "s/^/1/"
+# 141
+```
+```bash
+#   bash: random string:
+tr -dc 'A-Za-z0-9!"#$%&'\''()*+,-./:;<=>?@[\]^_`{|}~' < /dev/urandom | head -c 67  ; echo
+# h45u|QM6_&33xO#90wp*(ehJS!I5;G`K;a-JPDPVc0`{V%)1(SMko}{r3)mQ*OPv0[`
+```
+```bash
+#   bash: combine two linux command output with new line:
+echo $(ps aux | head -1)$'\n'$(ps auxf | tail -1)
+# USER PID %CPU %MEM VSZ RSS TTY STAT START TIME COMMAND
+# test 89751 0.1 0.2 157084 18452 ? Sl Oct03 0:17 ./test.pl
+```
+```bash
+#   bash: count logged in users:
+users | tr " " "\n" | uniq
+```
+```bash
+#   source dir copied from dev server to the local current folder:
+scp -r abhinickz@dev:/home/abhinickz/source .
+```
+```bash
+#   split file:
+split -l 500000 Archived_Doc_Data.text moveFile
+counter=1; for file in moveFile* ; do mv "$file" "moveFile$((counter++)).txt" ; done
+```
+```bash
+#   opensuse:?
+#   create new screen abhinickz_dev
+screen create abhinickz_dev
+```
+```bash
+#   detach running screen: in background
+#   CTRL a then press only d to detach
+#   reconnect to background detached screen
+screen reconnect abhinickz_dev
+```
+```bash
+#   CTRL d to terminate Screen.
+Alt+d opposite of CTRL+w
+```
+```bash
+#   create screen named session:
+screen -S abhinickz_dev
+```
+```bash
+# List Screen runnign sessions:
+screen -r
+# There are several suitable screens on:
+#         19275.abhinickz_dev (Detached)
+#         18895.abhinickz_int (Detached)
+# Type "screen [-d] -r [pid.]tty.host" to resume one of them.
+```
+```bash
+#   List Screen runnign sessions:
+screen -r 19275.abhinickz_dev
+```
+```bash
+#   Get permission in Octal Format:
+stat -c "%A %a %n %U" test.pl
+# -rw-r--r-- 644 test.pl pi
+```
+```bash
+#   bash: loop example
+for i in {1..2}; do echo -e 'test1\ttest\ttest\ttest\ttest' >> test.log; done; head test.log
+# test1	test	test	test	test
+# test1	test	test	test	test
+```
+```bash
+#   bash: run multiple sql file in db db_name:
+for file in `ls sql/*`; do psql db_name -f $file; done;
+```
+```bash
+#   bash: first line from the file:?
+for i in `csv_filename.txt` ; do '$i' | head -1 $i >> txt_file_header.txt; done;
+```
+```bash
+#   find: head: read 1st line from every file:
+find ./DATA -type f | xargs head -1 >> header_first_line.log
+```
+```bash
+#   find: xargs: deals with space in filename, basically change the default delimiter 
+find ./CDATA -type f | xargs -d '\n' chmod o-w
+find ./CDATA -type f | xargs -0 head -1 >> header_first_line.log
+```
+```bash
+#   find: all mp3 files recursively
+find -type f -iname "*.mp3"
+find ./CDATA -name "*.pl" -exec cygpath -awp {} \;
+```
