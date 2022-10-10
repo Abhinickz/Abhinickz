@@ -1519,3 +1519,104 @@ docker push abhinickz/ubuntu_dev_21_10:firsttry
 # 437e3e69fe53: Mounted from library/ubuntu
 # firsttry: digest: sha256:b793 size: 743
 ```
+```bash
+#   bash: docker: stop postgres docker gracefully:
+# USER         PID %CPU %MEM    VSZ   RSS TTY  STAT START   TIME COMMAND
+# postgres      11  0.0  0.6 5472604 157372 ?  S    21:05   0:02 postgres -c logging_collector=on -c log_directory=/logs -c log_filename=postgresql.log -c log_statement=all
+kill -s TERM 11
+# 2022-09-23 08:03:28.153 IST>[1]::[] [] LOG:  received smart shutdown request
+```
+```bash
+#   bash: mosquitto: Start mqtt broker server:
+mosquitto -v
+```
+```bash
+#   bash: mosquitto mqtt client subscribe to this topic: 'mqtt test abhinickz'
+mqtt sub -t 'mqtt test abhinickz' -h 'localhost' -v
+```
+```bash
+#   bash: mosquitto: mqtt client publish to this topic: 'mqtt test abhinickz'
+mosquitto_pub -t 'mqtt test abhinickz' -m 'hello world1'
+```
+```bash
+#    bash: mosquitto: Multiple topics:
+mqtt sub -t 'test' -t 'test2' -m 'hello world1'
+```
+```bash
+#    bash: mosquitto: sub with manual id:
+mqtt sub --id 'unique_id_abhinickz' -t 'test'  -h 'localhost' -v
+```
+```bash
+#   bash: parallel: run multiple sql file: parallel_1.sql parallel_2.sql
+parallel \psql -q -h 0.0.0.0 -U abhinickz -d dev_test -a -q -f parallel_{}.sql ::: 1 2
+```
+```bash
+#   bash: pg_restore: restore with custom compressed dump file format:
+pg_restore -j 8 -d db_name data_dump.c.sql
+```
+```bash
+#   bash: pg_dump: backup with custom compressed file format:
+pg_dump -Fc db_name > data_dump.c.sql
+```
+```bash
+#   bash: pg_restore: restore with custom compressed dump file format
+pg_restore -d db_name --no-owner --no-privileges --no-tablespaces --clean --schema public "data_dump.sql"
+```
+```bash
+#   bash: psql: copy table from one host to another:
+pg_dump -h host1 -t yourtable database1 | psql -d database2 -h host2
+```
+```bash
+#   bash: psql: copy from server to local:
+pg_dump -h host_name -t table_name db_name > ~/table_data.sql
+```
+```bash
+#   bash: psql: dump whole schema:
+pg_dump -t table_name db_name > ~/table_schema.sql
+```
+```bash
+#   bash: psql: only dump insert data sql file:
+pg_dump --column-inserts --data-only -t table_name db_name > ~/table_data_insert.sql
+```
+```bash
+#   bash: psql: redirect to local psql host:
+cat ~/table_data.sql | psql -d db_name
+```
+```bash
+#   bash: psql: run sql from file:
+psql -U user_name -d db_name -f test/load_data.sql
+```
+```bash
+#   bash: pgbench: initialize schema:
+pgbench -h 0.0.0.0 -U abhinickz -d test -p 5432 -i
+```
+```bash
+#   bash: pgbench: run postgres benchmark:
+# -c => client
+# -T => time in seconds
+# -S => Use only SELECT operation
+# -n => Skip vacuuming on tables
+# -j => number of threads (default: 1)
+pgbench -h 0.0.0.0 -U abhinickz -d test -p 5432 -c 100 -T 300 -S -n -j 4
+```
+```bash
+#   bash: pgbadger: postgres log analysis: pgbadger will create out.html If LOG: Ok
+pgbadger -j 4 --prefix '%m [%p] [%r] [%a] %q%u@%d ' postgresql_2021_02_11.log
+# [======================>  ] Parsed 1665758048 bytes of 1761595826 (94.56%), queries: 578233996, events: 1146
+# LOG: Ok, generating html report...
+```
+```bash
+#   bash: psql: export all db tables to csv files
+SCHEMA="public"
+DB="dev_data"
+psql -Atc "select tablename from pg_tables where schemaname='$SCHEMA'" $DB |\
+  while read TBL; do
+    psql -c "COPY $SCHEMA.$TBL TO STDOUT WITH CSV" $DB > $TBL.csv
+  done
+```
+```bash
+#   bash: pgtop: check postgres process:
+# for remote: flag -r or --remote-mode
+# and pg_proctab extension installed on the host 
+pg_top -r -h host_name -p 5433 -d db_name
+```
