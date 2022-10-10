@@ -1214,3 +1214,102 @@ echo $(pwd) | sed 's/\//\\/g'
 #   sed -i '' : The BSD sed command takes the -i option but requires a suffix for the backup (but an empty suffix is permitted).
 grep -I -ril -e '\[% INCLUDE page_elements\/forms\/dbl_submit_token.tt \%]' | xargs sed -i '' 's/\[% INCLUDE page_elements\/forms\/dbl_submit_token.tt \%]//'
 ```
+```bash
+#   sed: removes the whole matched line:
+grep -I -ril -e '\[% INCLUDE page_elements\/forms\/dbl_submit_token.tt \%]' | xargs sed -i '' 's/ *\[% INCLUDE page_elements\/forms\/dbl_submit_token.tt \%]/d'
+```
+```bash
+#   sed: handle files name with wierd character:
+# filename with quotes:
+find ./ | sed 's/'"'"'/\'"'"'/g' | sed 's/.*/"&"/'
+# "./"
+# "./test.log"
+# "./test.pl"
+```
+```bash
+#   sed: handle file name with space:
+find ./CDATA/ -type f | sed 's/ /\\ /g' | sed 's/(/\\(/g' | sed 's/)/\\)/g'
+# ./abc\ test\ 1080
+# ll ./abc\ test\ 1080
+```
+```bash
+#   sed: get/print only nth/5th line
+cat test.pl | sed -n '5 p'
+# use warnings;
+```
+```bash
+#   sed: remove m/nth line:
+sed -i '2d;4d' file_name
+```
+```bash
+#   grep date range: fetch data within OCT-NOV date range.
+grep -E '2017-1[0-1]-[0-3][0-9]' dev_stats.csv > dev_stats_date_range.csv
+```
+```bash
+#   grep: exclude hidden files:
+grep -v '\/\.'
+```
+```bash
+#   grep color option:
+grep --color=auto 'search_this' in_this_file.log
+```
+```bash
+#   grep: content and print both above and below 1 line:
+grep -C 1 -i 'found' test.pl
+```
+```bash
+#   grep: pick grep pattern from the file
+grep -F pick_word_from_file search_in_this_file
+```
+```bash
+#   grep hide grep process : [p] is a trick to stop you picking up the actual grep process itself.
+ps axuf | grep '[s]leep'
+```
+```bash
+#   grep AND example
+ps aux | grep -Ei 'script.*abhinickz'	#	E flag for giving pattern regex.
+# pi         19366  2.5  0.6 1123452 49380 ?       Sl   Oct01  48:21          \_ script --profile LXDE-abhinickz
+```
+```bash
+#   bash: grep: rg: get file name from patch:
+rg 'diff --git' patch.diff | sed 's/diff --git a\///g' | awk '{print $1}'
+# test.pl
+# test.log
+```
+```bash
+#   bash: grep: rg: search foo and ignore bar directory:
+rg foo -g '!bar/'
+```
+```bash
+#   bash: grep: rg: first match and exit:
+rg -m 1 SELECT test.sql
+# 4:SELECT
+```
+```bash
+#   grep OR example
+ps aux | grep 'abhinickz\|bhasker'
+```
+```bash
+#   bash: convert grep awk to awk:
+# awk and grep both at the same time:
+cat test | grep 'test' | awk 'BEGIN{ FS=","}{print $1}'
+cat test | awk 'BEGIN{ FS=","}/test/{ print $1 }'
+```
+```bash
+#   cut: get columns field only with delimiter(:) f1 => first field.
+# test:x:4:634:test:/bin:/bin/test
+# dev:x:4:634:dev:/bin:/bin/dev
+$ cut -d':' -f1 /tmp/data.log
+# test
+# dev
+```
+```bash
+#   bash: get only 42 chars from each line:
+locate dev/test/ | cut -c 1-42 | uniq
+```
+```bash
+#   tar: list content without extracting:
+tar -tf true.tar.gz
+# true-v1.0.2/
+# true-v1.0.2/LICENSE.md
+```
