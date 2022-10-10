@@ -2054,3 +2054,108 @@ my @sub_dir =  File::Find::Rule->directory
 my $string = "one.two.three.four";
 my $number = () = $string =~ /\./gi; # 3
 ```
+```perl
+#   perl: handling rrrors in perl with eval and use the error message as you wish.
+eval {
+    print "eval";
+    # die;
+};
+if ($@) {
+    print "test1\n";
+}
+END {
+    if ($@) {
+        print "test2\n";
+    }
+}
+```
+```perl
+#   perl: add custom perl modules dir in lib:
+export PERL5LIB=/test/perl_mod
+```
+```perl
+#   perl: terminal and file use UTF8:
+use open ':std', ':encoding(UTF-8)';
+```
+```perl
+#   perl: get start time of script run: use as CONSTANT
+use constant YMD_HMS_AT_START => POSIX::strftime( "%F %T", localtime $^T );
+print YMD_HMS_AT_START . "\n";
+# 2022-10-03 00:20:47
+```
+```perl
+#   perl: datetime past format:
+use DateTime qw();
+my $dt3 = DateTime->now->subtract(days => 1)->ymd("-");
+print "date: $dt3\n"
+# '2020-11-11'
+```
+```perl
+#  perl: file operation: encoding options:
+open ( my $FH, '>:encoding(Latin1)', '/tmp/file.log' );
+open ( my $FH, '>:encoding(iso-8859-1)', '/tmp/file.log' );
+```
+```perl
+#   perl: open file in binmode already, no need for binmode here:
+open my $fh, '<:raw', '/usr/share/zoneinfo/America/New_York';
+```
+```perl
+#   perl: get file mimetype:
+my ($mime_type)= split( /;|\s/, $_ );
+```
+```perl
+#   perl: disbale SSL in HTTP request LWP:
+$user_agent->ssl_opts( verify_hostname => 0, SSL_verify_mode => 0x00 );
+```
+```perl
+#   perl: Template::Toolkit:
+#    *.pm changes:
+$c->stash->{tt_test} => {status_name => 'test'};
+$c->stash->{status_value} = {
+    test => 'test_value',
+};
+```
+```perl
+#   perl: min and max from array list:
+my ( $max, $min ) = ( -1e99, 1e99 ); #	Initialize to values outside anything in your list:
+map { $max = $_ if ( $_ > $max ); $min = $_ if( $_ < $min ); } @sums;
+```
+```perl
+#   perl: skip uninitialized warnings:
+no warnings "uninitialized";
+```
+```perl
+#   perl: remove duplicate chars from string & count the minimum no of steps required:
+my $string = <STDIN>;
+chomp( $string );
+my $count = 0;
+while ( $string =~ /(.)(?=.*?\1)/g ) {
+    $string =~ s/(.)(?=.*?\1)//;
+    $count++;
+}
+print $count;
+```
+```perl
+#   perl: get chars ASCII Values.
+perl -e 'use utf8; print ord ( 'a' ); print "\n";'
+# 97
+```
+```perl
+#   perl: get char from code value:
+perl -e 'use utf8; print chr (97); print "\n";'
+# a
+perl -e 'use utf8; use open ":std", ":encoding(UTF-8)"; print "\t$_:".chr($_) for ( 500..505 ); print "\n";'
+#	 500:Ǵ	501:ǵ	502:Ƕ	503:Ƿ	504:Ǹ	505:ǹ
+```
+```perl
+#   perl: sort keys values numerically in hashes:
+print $_ . "\n" foreach ( sort { $a <=> $b } keys %perms );
+print $perms{$_} . "\n" foreach ( sort { $a <=> $b } values %perms );
+```
+```perl
+#   perl: array memory efficient:
+{
+    local $, = "\n";
+    print @big_array;
+}
+```
