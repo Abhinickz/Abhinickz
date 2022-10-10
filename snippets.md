@@ -508,3 +508,103 @@ git remote show origin
 #   Local ref configured for 'git push':
 #     main pushes to main (local out of date)
 ```
+```bash
+#   git: show log in oneline
+git log --oneline
+# 6f3a223 (origin/master, origin/HEAD, master) added zsh config
+# 3dd94e7 Fixed dir alias
+# 5398bf4 Added git commit and push alias
+```
+```bash
+#   git: remove 1 last local commit: into stage area:
+git reset --soft HEAD~1
+# 6f3a223: reomved and file moved to staged area:
+```
+```bash
+#   git: check commit count by author
+git shortlog -sn
+#     36  Abhinickz
+#     31  Abhishek Bhasker
+```
+```bash
+#   git: check config local
+git config -l
+# core.editor=vim
+# core.excludesfile=~/.gitignore_global
+# user.name=Abhishek Bhasker
+# user.email=abhinickz@dev
+```
+```bash
+#   git: configure email/name config globally:
+git config --global user.email "abhinickz@dev"
+git config --global user.name "abhinickz"
+```
+```bash
+#   diff: between two files
+diff /tmp/file1 /tmp/file2
+# 1c1
+# < 1
+# ---
+# > 2
+```
+```bash
+#   git: diff without git repo: any files
+git diff --no-index /tmp/file1 /tmp/file2
+# diff --git a/tmp/file1 b/tmp/file2
+# index d00491f..0cfbf08 100644
+# --- a/tmp/file1
+# +++ b/tmp/file2
+# @@ -1 +1 @@
+# -1
+# +2
+```
+```bash
+#   git: diff between two commits on github UI:
+https://github.com/<username>/<repo_name>/compare/<commit1>...<commit2>
+https://github.com/Abhinickz/Abhinickz/compare/3dd94e7056119b19bee7d76c5ef25b7349a5bd6a...6f3a2239c8c9334531e1ddab284e41ef61e867da
+```
+```bash
+#   git: remote stuff:
+git remote remove upstream
+git remote set-url origin git@github.com:Abhinickz/Abhinickz.git
+git remote add upstream git@github.com:Abhinickz/Abhinickz.git
+```
+```bash
+#   git: find parent branch: checkout out from:
+git log --pretty=format:'%D' HEAD^ | grep 'origin/' | head -n1 | sed 's@origin/@@' | sed 's@,.*@@'
+# test
+```
+```bash
+#   git: PULL request between commits hash:
+git log --oneline 49b...edb | grep 'Merge pull request #'
+# 869 Merge pull request #13 from abhinickz_dev/test_dev
+# r5t Merge pull request #12 from abhinickz_int/test_int
+```
+```bash
+#   git log: search in log history:
+#   show commits list where the relevant_string was either added or removed in any .pm file:
+git log -Srelevant_string -- *.pm
+```
+```bash
+#   git: diff from commit:
+git show --name-only 250fc5ddf1a2f75e4e20430d129a784db4882796
+# commit 250fc5ddf1a2f75e4e20430d129a784db4882796 (HEAD -> snippets)
+# Author: Abhishek Bhasker <abhinickz@dev>
+# Date:   Tue Oct 4 04:31:39 2022 +0530
+#
+#     WIP: added snippets
+#
+# snippets.md
+```
+```bash
+#   git: diff from commit:
+git show --stat  250fc5ddf1a2f75e4e20430d129a784db4882796
+# commit 250fc5ddf1a2f75e4e20430d129a784db4882796 (HEAD -> snippets)
+# Author: Abhishek Bhasker <abhinickz@dev>
+# Date:   Tue Oct 4 04:31:39 2022 +0530
+#
+#     WIP: added snippets
+#
+#  snippets.md | 525 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------------
+#  1 file changed, 482 insertions(+), 43 deletions(-)
+```
