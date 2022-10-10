@@ -1313,3 +1313,103 @@ tar -tf true.tar.gz
 # true-v1.0.2/
 # true-v1.0.2/LICENSE.md
 ```
+```bash
+#   tar: extract true.tar.gz:
+tar -xvzf true.tar.gz
+```
+```bash
+#   .bz2: extract bz2 file:
+bzip2 -d test.bz2
+```
+```bash
+#   create ompressed bz2 file: -k keep the original file:
+bzip2 -k test.log
+```
+```bash
+#   unzip .7z files maintaining dir structure:
+7z x ./OMDATA/AXSOne_Priority1_Phase1_AHP.7z
+```
+```bash
+#   unzip: .zip files maintaining dir structure:
+$ unzip ./OMDATA/AXSOne_Priority1_Phase1_AHP.zip -d ./
+```
+```bash
+#   bash: get formatted date:
+date +"%Y_%m_%d"
+# 2022_10_04
+```
+```bash
+#   bash: epoch to date:
+date -d @1234567890
+# Sat Feb 14 05:01:30 IST 2009
+```
+```bash
+#   bash: date time example
+echo $(date '+%Y-%m-%d %r') "<=>" $(date -d '+1 hour' '+%Y-%m-%d %r')
+# 2022-10-03 12:14:49 AM <=> 2022-10-03 01:14:49 AM
+echo $(date '+%Y-%m-%d %I:%M %p') "<=>" $(date -d '+1 hour' '+%Y-%m-%d %I:%M %p')
+# 2022-10-03 12:15 AM <=> 2022-10-03 01:15 AM
+```
+```bash
+#   bash: patch file with date:
+echo DEV_$(date '+%Y%m%d%H%M').patch
+# DEV_202210030017.patch
+```
+```bash
+#   bash: interpret as ' single quote:
+echo test''"'"''test
+# test'test
+```
+```bash
+#   bash: glob pattern: hidden/regular files:
+echo * # all (only regular)
+# a
+echo .* # all (only hidden)
+# .a ..a
+```
+```bash
+#   bash: echo newline example:
+echo "test1 test2"$'\n'"test3 test4"
+```
+```bash
+# test1 test2
+# test3 test4
+```
+```bash
+#   bash: echo render special character like newline \n \r
+echo -e "Line1\nLine2"
+# Line1
+# Line2
+```
+```bash
+#   bash: ps output info:
+ps auxf
+# USER       PID  %CPU %MEM  VSZ RSS     TTY   STAT START   TIME COMMAND
+# timtty   29217  0.0  0.0 11916 4560 pts/21   S+   08:15   0:00 test  
+# root     29505  0.0  0.0 38196 2728 ?        Ss   Mar07   0:00 sshd: can [priv]
+# can      29529  0.0  0.0 38332 1904 ?        S    Mar07   0:00 sshd: can@notty
+# USER = user owning the process
+# PID = process ID of the process
+# %CPU = It is the CPU time used divided by the time the process has been running.
+# %MEM = ratio of the process’s resident set size to the physical memory on the machine
+# VSZ = virtual memory usage of entire process (in KiB)
+# RSS = resident set size, the non-swapped physical memory that a task has used (in KiB)
+# TTY = controlling tty (terminal)
+# STAT = multi-character process state
+# START = starting time or date of the process
+# TIME = cumulative CPU time
+# COMMAND = command with all its arguments
+```
+```bash
+#   ps aux: check pid running process:
+ps -fp 1
+# UID   PID    PPID  C STIME TTY      TIME CMD
+# root    1       0  0 21:15 ?    00:00:01 /sbin/init splash
+```
+```bash
+#   ps aux: check pid process directly started by given pid
+ps -f --ppid 1
+# UID   PID    PPID  C STIME TTY      TIME CMD
+# root  334       1  0 21:16 ?    00:00:01 /lib/systemd/systemd-journald
+# root  408       1  0 21:16 ?    00:00:05 /lib/systemd/systemd-udevd
+```
