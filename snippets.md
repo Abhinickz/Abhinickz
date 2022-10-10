@@ -2289,3 +2289,144 @@ __END__
 =cut
 ```
 ---
+```sql
+--  ORACLE:
+--  oracle: sqlplus: change 3.7850E+10 exponential format to 37849883329.
+SHOW NUMWIDTH
+NUMWIDTH 10
+SET NUMWIDTH 15
+```
+```sql
+--  oracle: sqlplus: reverse-serach and up-down will give history.
+--  oracle: sqlplus: rlwrap -c sqlplus abhinickz@test.sql.com
+SET LINE 32000
+```
+```sql
+--  oracle: sqlplus: truncates the line if its is longer then LINESIZE
+SET WRAP ON
+```
+```sql
+--  oracle: sqlplus: linesize the length of the line
+SET LINESIZE
+```
+```sql
+-- oracle: sqlplus: change column_name size: where a10 defines column size & column_name is column name:
+COLUMN column_name FORMAT a10
+```
+```sql
+--  oracle: temp table rows with columns:
+SELECT 1, 2, 3 FROM dual
+    UNION ALL -- UNION
+SELECT 4, 5, 6 FROM dual
+    UNION ALL -- UNION
+SELECT 7, 8, 9 FROM dual;
+```
+```sql
+--  oracle: get all tables in abhinickz schema in with owner "abhinickz".
+SELECT DISTINCT owner, object_name 
+    FROM dba_objects
+WHERE object_type = 'TABLE'
+    AND owner = 'abhinickz';
+```
+```sql
+--  oracle: table search:
+SELECT table_name FROM all_tables WHERE table_name LIKE '%BLOB%' AND owner = 'ABHINICKZ';
+```
+```sql
+--  oracle: regex datetime:
+AND NOT REGEXP_LIKE (string_value, '[[:digit:]]{2}\/[[:digit:]]{2}\/[[:digit:]]{4} [[:digit:]]{2}:[[:digit:]]{2}:[[:digit:]]{2}');
+-- oracle: regex example:
+REGEXP_LIKE(string_value, '[^[:alnum:]^[:space:]]');
+```
+```sql
+-- oracle: convert column to NUMBER from VARCHAR & use REGEX on ORACLE with GROUP CAPTURING:
+SELECT
+    prefix,
+    'PRE' || LPAD((TO_NUMBER(REGEXP_REPLACE( prefix, 'PRE([[:digit:]]{8})', '\1' )) + 1), 8, '0') "new_prefix" 
+FROM abhinickz.data;
+```
+```sql
+--  oracle: UPDATE query example:
+-- multiple rows updated with one query.
+UPDATE ABHINICKZ.DATA_FINAL DF_1
+SET DF_1."Duration Time" = (
+    SELECT
+        ROUND((TO_DATE(DF_2."Stop Time", 'DD/MM/YYYY HH24:MI:SS') - TO_DATE(DF_2."Start Time", 'DD/MM/YYYY HH24:MI:SS')) * 24 * 60 * 60) AS DURATION
+    FROM ABHINICKZ.DATA_FINAL DF_2
+    WHERE DF_1."SegID" = DF_2."SegID"
+);
+SELECT TO_NUMBER(TO_CHAR(TO_DATE("DURATION",'HH24:MI:SS'),'SSSSS'))/60  AS MINS FROM ABHINICKZ.DATA_FINAL;
+```
+```sql
+--  oracle: SELECT query with data/time operation
+SELECT C.*,
+    TO_NUMBER(TO_CHAR(TO_DATE('1', 'J') + (to_date("StopTime", 'DD/MM/YYYY HH24:MI:SS') - to_date("StartTime", 'DD/MM/YYYY HH24:MI:SS')), 'J') - 1) days,
+    TO_CHAR(TO_DATE('00:00:00', 'HH24:MI:SS') + (to_date("StopTime", 'DD/MM/YYYY HH24:MI:SS') - to_date("StartTime", 'DD/MM/YYYY HH24:MI:SS')), 'HH24:MI:SS') TIME_1,
+	((to_date("StopTime", 'DD/MM/YYYY HH24:MI:SS') - to_date("StartTime", 'DD/MM/YYYY HH24:MI:SS')) * 24 * 60 * 60) TIME_2
+FROM ABHINICKZ.DATA_FINAL DF;
+```
+```sql
+--  oracle: timezone change information.
+CAST(TO_TIMESTAMP_TZ(REGEXP_REPLACE(DATERECEIVED,'(.+?)T(.+?)(\-.*)','\1 \2 \3'),'YYYY-MM-DD HH24:MI:SSXFF TZH:TZM') at time zone 'EST' as DATE)
+```
+```sql
+--  oracle: extract only date, month from dateTime
+SELECT occurred$$, TO_CHAR( occurred$$, 'DD' ) FROM ABHINICKZ.docs;
+-- 23-JUN-15 => 23
+SELECT occurred$$, TO_CHAR( occurred$$, 'mm' )
+-- 23-JUN-15 => 06 (returns month number)
+```
+```sql
+--  oracle: CREATE queries:
+CREATE TABLE ABHINICKZ_DEV.docs AS
+SELECT id, xl_pre, display_name, xl_fix || 'af' AS xl_af_pre
+FROM ABHINICKZ_INT.docs
+WHERE display_name IN (
+    SELECT DISTINCT REGEXP_REPLACE( REPLACE ( F2, F1 || '.MP3' ), '\.\/TEST \(Audio Only\)\/(.*)\/Audio Files\/', '\1' ) cust
+FROM ABHINICKZ_INT.lftxt);
+```
+```sql
+CREATE TABLE ABHINICKZ.DATA AS
+SELECT xl_pre, NVL( MAX (bt_num),0 ) used_num
+FROM ABHINICKZ_INT.DOCS, ABHINICKZ_DEV.DOCS dev_docs
+WHERE bt_alpha(+) = dev_docs.xl_pre
+GROUP BY xl_pre;
+```
+```sql
+CREATE TABLE ABHINICKZ.DATA AS
+SELECT xl_pre || LPAD ( ( ROW_NUMBER() OVER ( PARTITION BY SUBSTR ( f1, 1, 4 ) ORDER BY f1 ) + used_num ), 8, 0 ) new_data,
+lf.* 
+FROM ABHINICKZ_INT.DATA lf, ABHINICKZ_DEC.DATA b
+WHERE SUBSTR(f1,1,4)|| 'AF' = xl_pre;
+```
+```sql
+--  oracle: show create table like mysql
+SET HEADING OFF;
+SET ECHO OFF;
+SET PAGES 999;
+SET LONG 90000;
+SPOOL DDL_LIST.sql
+SELECT DBMS_METADATA.get_ddl('TABLE','DEPT','TEST') FROM dual;
+SELECT DBMS_METADATA.get_ddl('INDEX','DEPT_IDX','TEST') FROM dual;
+SPOOL OFF;
+```
+```sql
+-- /*
+-- load data
+-- CHARACTERSET 'WE8ISO8859P1'
+-- infile 'data.txt'
+-- badfile 'data.bad'
+-- discardfile 'data.dsc'
+-- append INTO TABLE ABHINICKZ.DATA FIELDS terminated by X'14'
+-- (USERID, LASTNAME, FIRSTNAME, USERNAME, IS_ACTIVE)
+-- */
+```
+```sql
+--  mssql: Microsoft SQL Server 
+--  mssql: show DB version:
+SELECT @@VERSION;
+```
+```sql
+--  mssql: show DB name:
+SELECT DB_NAME(db_id());
+```
