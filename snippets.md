@@ -1719,3 +1719,104 @@ perl -V | awk 'f;/INC:/{f=1}'
 #    /usr/share/perl/5.32
 #    /usr/local/lib/site_perl
 ```
+```bash
+#   perl: get @INC:
+perl -e 'use strict; use warnings; use Data::Dumper; print Dumper(\@INC);'
+# $VAR1 = [
+#     '/etc/perl',
+#     '/usr/local/lib/x86_64-linux-gnu/perl/5.22.1',
+#     '/usr/local/share/perl/5.22.1',
+#     '/usr/lib/x86_64-linux-gnu/perl5/5.22',
+#     '/usr/share/perl5',
+#     '/usr/lib/x86_64-linux-gnu/perl/5.22',
+#     '/usr/share/perl/5.22',
+#     '/usr/local/lib/site_perl',
+#     '/usr/lib/x86_64-linux-gnu/perl-base',
+# ];
+```
+```bash
+#   perl: get %INC:
+perl -e 'use strict; use warnings; use Data::Dumper; print Dumper(\%INC);'
+# $VAR1 = {
+#     'constant.pm' => '/usr/share/perl/5.22/constant.pm',
+#     'overload.pm' => '/usr/share/perl/5.22/overload.pm',
+#     'Carp.pm' => '/usr/local/share/perl/5.22.1/Carp.pm',
+#     'bytes.pm' => '/usr/share/perl/5.22/bytes.pm',
+#     'Exporter.pm' => '/usr/share/perl/5.22/Exporter.pm',
+#     'warnings/register.pm' => '/usr/share/perl/5.22/warnings/register.pm',
+#     'XSLoader.pm' => '/usr/local/lib/x86_64-linux-gnu/perl/5.22.1/XSLoader.pm',
+#     'Data/Dumper.pm' => '/usr/lib/x86_64-linux-gnu/perl/5.22/Data/Dumper.pm',
+#     'warnings.pm' => '/usr/share/perl/5.22/warnings.pm',
+#     'strict.pm' => '/usr/share/perl/5.22/strict.pm',
+#     'overloading.pm' => '/usr/share/perl/5.22/overloading.pm'
+# };
+```
+```bash
+#   perl oneliner: get user info:
+perl -e 'use strict; use warnings; use Data::Dumper; my @user_info = getpwuid($<); print Dumper \@user_info;';
+[
+    'dev',
+    'x',
+    1000,
+    1000,
+    '',
+    '',
+    ',,,',
+    '/home/dev',
+    '/usr/bin/zsh'
+];
+```
+```bash
+#   perl oneliner: to check module installed version:
+perl -MData::Dumper -le 'print Data::Dumper->VERSION';
+# 2.174
+```
+```bash
+#   perl oneliner: to check %INC loaded modules path:
+perl -MData::Dumper -e 'print Dumper \%INC;'
+# \%INC = {
+#     'Exporter.pm' => '/usr/lib/aarch64-linux-gnu/perl-base/Exporter.pm',
+#     'bytes.pm' => '/usr/lib/aarch64-linux-gnu/perl-base/bytes.pm',
+#     'strict.pm' => '/usr/lib/aarch64-linux-gnu/perl-base/strict.pm',
+#     'warnings/register.pm' => '/usr/lib/aarch64-linux-gnu/perl-base/warnings/register.pm',
+#     'warnings.pm' => '/usr/lib/aarch64-linux-gnu/perl-base/warnings.pm',
+#     'Carp.pm' => '/usr/lib/aarch64-linux-gnu/perl-base/Carp.pm',
+#     'overloading.pm' => '/usr/lib/aarch64-linux-gnu/perl-base/overloading.pm',
+#     'constant.pm' => '/usr/lib/aarch64-linux-gnu/perl-base/constant.pm',
+#     'Data/Dumper.pm' => '/usr/lib/aarch64-linux-gnu/perl/5.32/Data/Dumper.pm',
+#     'XSLoader.pm' => '/usr/lib/aarch64-linux-gnu/perl-base/XSLoader.pm'
+# };
+```
+```bash
+#   perl oneliner: color print:
+perl -e 'use Term::ANSIColor; print color("red"), "stop_red!\n", color("reset"); print color("green"), "go_green!\n", color("reset");'
+# stop_red
+# go_green
+```
+```bash
+#   perl oneliner: print all possible encoding:
+perl -MEncode -e 'print join "\n" => Encode->encodings(":all")' | grep utf
+# utf-8-strict
+# utf8
+```
+```bash
+#   perl oneliner: to print whole file:
+perl -ne '{print $.," ", $_}' test.log
+```
+```bash
+#   perl oneliner: remove any utf16 characters in file:
+perl -n -e 's/^[\xFF\xEF\xBB\xBF]{1,3}//;s/^\xFE\xFE/\xFE/;s/\x00//g;print' < INFILE > OUTFILE
+```
+```bash
+#   perl oneliner: to print file with regexp match only:
+perl -ne 'use strict; use warnings; $_ =~ m/(.*?)\.(.*?),(.*)/g; { print $2, "\n" }' test.log
+```
+```bash
+#   perl oneliner: prints today date using linux
+perl -e 'print `date +"%m/%d/%Y"`."\n";'
+# 10/03/2022
+```
+```bash
+#   perl oneliner: handle xargs fila name space problem
+locate -r html$ | perl -lne 'print quotemeta' | xargs grep -i 'find-this' *
+```
