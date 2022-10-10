@@ -404,3 +404,107 @@ redis-cli -a XXXXXX monitor
 #   bash: rsync: sync server dir to lcoal without overwrting existing files:
 rsync -rvz -e 'ssh -p 5050' --progress --ignore-existing abhinickz@dev:/tmp/test/. /home/abhinickz/test/.
 ```
+```bash
+#   bash: rsync: sync local directory to remote host:
+rsync -razP --delete -e 'ssh -p 5050' --progress /home/abhinickz/test/. abhinickz@dev:/tmp/test/.
+```
+```bash
+#   bash: git: stop SSL verify:
+export GIT_SSL_NO_VERIFY=true
+```
+```bash
+#   git: clone over local network repo:
+git clone ssh://test@pi.local:/home/abhinickz/dev_work/
+```
+```bash
+#   git: delete local git branch:
+git branch -D branch_name1 branch_name2
+# Deleted branch branch_name1 (was ad55dfc).
+# Deleted branch branch_name2 (was fd55dfc).
+```
+```bash
+#   git: delete from remote repo:
+git push origin --delete branch_name1 branch_name2
+# branch_name
+# To github.com:Abhinickz/test.git
+#  - [deleted]             branch_name1
+#  - [deleted]             branch_name2
+```
+```bash
+#   git: pull: rebase branch by pulling the latest changes:
+git pull --rebase upstream DEV_BRANCH
+```
+```bash
+#   git: diff: whitespace check: usefull for creating patch without whitespace warnings:
+git diff --check
+# dev/test.properties:3: trailing whitespace.
+# +PROXY_BACKEND = '' 
+```
+```bash
+#   git: diff show modified file name only:
+git diff --name-only
+# docker-compose.yaml
+# docker/nginx/Dockerfile
+```
+```bash
+#   git: diff: show whole stat:
+git diff --stat
+#  snippets.md | 7 +++++++
+#  1 file changed, 7 insertions(+)
+```
+```bash
+#   git: diff: show numerical stat:
+git diff --numstat
+# 9       0       snippets.md
+```
+```bash
+#   git: diff: show short stat:
+git diff --shortstat
+#  1 file changed, 10 insertions(+)
+```
+```bash
+#   git: diff: distribution of relative amount of changes for each sub-directory:
+git diff --dirstat
+#   60.9% docker/pihole/workdir/
+#   21.2% docker/pihole/
+#    7.8% docker/postgres/workdir/
+#    6.4% docker/smokeping/
+```
+```bash
+#   git: diff: show changed file name:
+git diff --name-status
+# M       snippets.md
+```
+```bash
+#   git: diff show modified lines only:
+git diff -U0
+# diff --git a/learn_rust_playground/src/main.rs b/learn_rust_playground/src/main.rs
+# index f6d0220..c7ae92a 100644
+# --- a/learn_rust_playground/src/main.rs
+# +++ b/learn_rust_playground/src/main.rs
+# @@ -2 +2 @@ fn main() {
+# -    println!("test");
+# +    print!("test")
+```
+```bash
+#   git: diff: get conflicted file list: that needs to be merged:
+git diff --name-only --diff-filter=U
+```
+```bash
+#   git: show git branch created by user:
+git for-each-ref --format=' %(authorname) %09 %(refname)'
+#  Abhishek Bhasker 	 refs/heads/main
+#  Abhishek Bhasker 	 refs/remotes/origin/main
+```
+```bash
+#   git: check repo remote info
+git remote show origin
+# * remote origin
+#   Fetch URL: git@github.com:Abhinickz/Abhinickz.github.io.git
+#   Push  URL: git@github.com:Abhinickz/Abhinickz.github.io.git
+#   HEAD branch: main
+#   Remote branch:
+#     main tracked
+#   Local ref configured for 'git push':
+#     main pushes to main (local out of date)
+```
