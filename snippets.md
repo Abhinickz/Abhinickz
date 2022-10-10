@@ -1413,3 +1413,109 @@ ps -f --ppid 1
 # root  334       1  0 21:16 ?    00:00:01 /lib/systemd/systemd-journald
 # root  408       1  0 21:16 ?    00:00:05 /lib/systemd/systemd-udevd
 ```
+```bash
+#   ps aux: sort by cpu:
+ps aux --sort=-pcpu | head -2
+# USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+# pi         19366  2.5  0.6 1123452 49380 ?       Sl   Oct01  48:18 lxpanel --profile LXDE-pi
+```
+```bash
+#   ps aux: sort by memory:
+ps aux --sort -rss | head -2
+# USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+# root       17137  0.4  1.2 340476 100892 tty7    Ssl+ Oct01   9:25 /usr/lib/xorg/Xorg :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtswitch
+```
+```bash
+#   ps aux: find zombie process:
+ps axo pid=,stat= | awk '$2~/^Z/ { print }'
+```
+```bash
+#   ps aux: show threads:
+ps -e -T | grep process_name
+```
+```bash
+#   bash: IO: check active process:
+iotop -ao
+# Total DISK READ: 31.22 K/s | Total DISK WRITE: 27.31 K/s
+#   TID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN     IO>    COMMAND
+# 13581 be/4 root        273.50 K    116.00 K  0.00 %  0.10 % perl test.pl
+```
+```bash
+#   man command:
+# 1      User Commands
+# 2      System Calls
+# 3      C Library Functions
+# 4      Devices and Special Files
+# 5      File Formats and Conventions
+# 6      Games et. al.1      User Commands
+# 2      System Calls
+# 3      C Library Functions
+# 4      Devices and Special Files
+# 5      File Formats and Conventions
+# 6      Games et. al.
+# 7      Miscellanea
+# 8      System Admi
+# 7      Miscellanea
+# 8      System Administration tools and Daemons
+man 1 printf
+man 2 printf
+# No manual entry for printf in section 2
+man 3 printf
+man -a printf
+```
+```bash
+#   bash: docker: commit a container:
+docker commit container_name/id running_container_image
+# f5283438590d
+```
+```bash
+#   bash: docker: images formatted information:
+$ docker images -a --format='{{json .}}' | jq
+# {
+#   "Containers": "N/A",
+#   "CreatedAt": "2022-09-24 20:03:28 +0530 IST",
+#   "CreatedSince": "3 years ago",
+#   "Digest": "<none>",
+#   "ID": "sad878fds8",
+#   "Repository": "dev-images-postgres",
+#   "SharedSize": "N/A",
+#   "Size": "212MB",
+#   "Tag": "latest",
+#   "UniqueSize": "N/A",
+#   "VirtualSize": "211.8MB"
+# }
+```
+```bash
+#   bash: docker: images formatted information with given fields:
+docker image list --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}\t{{.Size}}\t{{.CreatedAt}}"
+# 5e378031d472    memcached    1.5-alpine      8.9MB      2020-02-06 08:42:24 +0530 IST
+# 35b0e5135df0    openjdk      8-jre-alpine    83.4MB     2019-05-18 04:22:40 +0530 IST
+```
+```bash
+#   bash: docker: container formatted information:
+docker container ls --format='{{json .}}' | jq
+# {
+#   "Command": "\"docker-entrypoint.s…\"",
+#   "CreatedAt": "2021-12-09 12:18:18 +0530 IST",
+#   "ID": "3722bac8aa65",
+#   "Image": "memcached:1.5-alpine",
+#   "Labels": "com.docker.compose.image=sha256:5e378com.docker.compose.version=2.2.1",
+#   "LocalVolumes": "0",
+#   "Mounts": "",
+#   "Names": "memcached",
+#   "Networks": "docker-dev_default",
+#   "Ports": "11211/tcp",
+#   "RunningFor": "10 hours ago",
+#   "Size": "0B (virtual 8.9MB)",
+#   "State": "running",
+#   "Status": "Up 10 hours"
+# }
+```
+```bash
+#   bash: docker: push image to registry:
+docker push abhinickz/ubuntu_dev_21_10:firsttry
+# The push refers to repository [docker.io/abhinickz/ubuntu_dev_21_10]
+# 2c3ddd1f0489: Pushing [========>]  1.337GB/7.498GB
+# 437e3e69fe53: Mounted from library/ubuntu
+# firsttry: digest: sha256:b793 size: 743
+```
