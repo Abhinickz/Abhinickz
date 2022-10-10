@@ -3171,3 +3171,90 @@ ORDER BY 3 DESC, 1 LIMIT 5;
 -- └──────────┴─────────┴───────┘
 ```
 ---
+```powershell
+#   windows: cmd: ip release and renew:
+ipconfig /release
+ipconfig /renew
+```
+```powershell
+#   windows: cmd: find command:
+findstr /s "SECURITY" *.SQL
+```
+```powershell
+#   windows: cmd: service ssh service:
+net stop sshd
+```
+```powershell
+#   windows: cmd: kill muliple process and service forcefully:
+TASKKILL /F /PID 5900 /PID 5901
+```
+```powershell
+#   windows: cmd: find windows process && service PID:
+TASKLIST
+```
+```powershell
+#   windows: run powershell script bypassing execution policy:
+powershell -ExecutionPolicy Bypass -File I:\scripts\access_wsl.ps1
+```
+---
+```python
+#   python: install module:
+pip install ppm
+```
+```python
+python -c "import pip; print(pip.__version__)"
+# 20.3.4
+```
+```python
+python -m site
+# sys.path = [
+#     '/tmp',
+#     '/usr/lib/python39.zip',
+#     '/usr/lib/python3.9',
+#     '/usr/lib/python3.9/lib-dynload',
+#     '/home/abhinickz/.local/lib/python3.9/site-packages',
+#     '/usr/local/lib/python3.9/dist-packages',
+#     '/usr/lib/python3/dist-packages',
+#     '/usr/lib/python3.9/dist-packages',
+# ]
+# USER_BASE: '/home/abhinickz/.local' (exists)
+# USER_SITE: '/home/abhinickz/.local/lib/python3.9/site-packages' (exists)
+# ENABLE_USER_SITE: True
+```
+---
+```javascript
+// js: debug: caller function:
+console.log("caller is " + arguments.callee.caller.toString());
+```
+```javascript
+//   js: debug: console error: example:
+window.onerror = function(error) {
+    console.log(error);
+};
+```
+```javascript
+//  js: get IFrame child elements:
+document.getElementById("DEV_IFRAME").contentWindow.document.getElementById("DEV").value;
+```
+```javascript
+//  js: get epoch time:
+Math.round((new Date()).getTime() / 1000);
+// 1664986056
+```
+```javascript
+// js: close chrome window after 1200 sec:
+window.setTimeout(function() {
+    var win = window.open("about:blank", "_self");
+    win.close();
+}, 1200000);
+```
+```javascript
+// js: bookmarklet for login:
+javascript: (() => {
+    const url = 'https://dev-server:8443/Login.html';
+    if (location.href !== url) return (location.href = url);
+    document.querySelector('input#login_username').value = 'user_name';
+    document.querySelectorAll('input[type="password"]')[0].value = 'XXXXX';
+    document.querySelector('#button').click();
+})();
+```
