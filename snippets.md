@@ -608,3 +608,102 @@ git show --stat  250fc5ddf1a2f75e4e20430d129a784db4882796
 #  snippets.md | 525 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-------------
 #  1 file changed, 482 insertions(+), 43 deletions(-)
 ```
+```bash
+#   git: get changed filenames from commit:
+git diff-tree --no-commit-id --name-only -r 250fc5ddf1a2f75e4e20430d129a784db4882796
+# snippets.md
+```
+```bash
+#   git: diff between two commits for specific file.
+git diff 8dc651ab0c2f6812e0522628bc5b8390fa95f634 250fc5ddf1a2f75e4e20430d129a784db4882796 README.md
+```
+```bash
+#   git: Apply git diff:
+git apply changes.diff
+```
+```bash
+#  git: revert back git diff:
+git apply -R changes.diff
+```
+```bash
+#   git: save stash with name:
+git stash save "my_stash"
+# Saved working directory and index state On master: my_stash
+```
+```bash
+#   git: all stash:
+git stash list
+# stash@{0}: On master: my_stash
+```
+```bash
+#   git: stash: apply nth stash and remove it from the stash stack:
+git stash pop stash@{n}
+# Dropped stash@{0} (de64d256fb15937c28efcea01384264534523153)
+```
+```bash
+#   git: stash: apply a stash and keep it in the stash stack:
+git stash apply stash@{n}
+```
+```bash
+#   bash: git: bulk drop stash:
+for i in {37..5}; do git stash drop stash@{$i}; done;
+# Dropped stash@{37} (147807frythddc397dad0fde124a6be46c6cb968)
+# ...
+# Dropped stash@{5} (987fvu07dc397dad0fde124a6be46c6cb960998)
+```
+```bash
+#   git: stash: push file with stash_name:
+git stash push -m stash_name test/test.pl
+# Saved working directory and index state On master: stash_name
+```
+```bash
+#   git: check branches/ref updated in the local repo:
+git reflog
+# 625e593 (HEAD -> master) HEAD@{0}: reset: moving to HEAD
+# 625e593 (HEAD -> master) HEAD@{1}: reset: moving to HEAD
+# 625e593 (HEAD -> master) HEAD@{2}: commit (initial): WIP: added snippets
+```
+```bash
+#   git: reset the repo HEAD@{n} before rebase the local branch:
+git reset --hard HEAD@{12}
+```
+```bash
+#   git: remote git repo branch and sync on local:
+git remote add abhinickz git@github.com:abhinickz/abhinickz.git
+git fetch abhinickz
+git checkout -b
+git reset --hard abhinickz/dev
+```
+```bash
+#   git: blame example:
+git blame -L 3,5 -- test.pl
+git blame -L 3,+2 -- test.pl
+# a4f080fc (Abhishek Bhasker 2022-10-06 01:14:34 +0530  3) use strict;
+# a4f080fc (Abhishek Bhasker 2022-10-06 01:14:34 +0530  4)
+# a4f080fc (Abhishek Bhasker 2022-10-06 01:14:34 +0530  5) use warnings;
+```
+```bash
+#   tree: check multiple directory structure:
+tree tmp/ test/
+# tmp
+# `-- test.pl
+# test
+# |-- test.log
+# `-- test.pl
+```
+```bash
+#   bash: vim search count:
+# n flag makes the :substitute command print the number of matches instead of performing an actual substitution;
+# g flag enables reporting of multiple matches per line.
+:%s/pattern//ng
+# 12 matches on 7 lines
+```
+```bash
+#   bash: vim previous search count:
+:%s///gn
+# 12 matches on 7 lines
+```
+```bash
+#   bash: vim comment multiple line range: 66 to 70 (inclusive)
+:66,70s/^/#
+```
