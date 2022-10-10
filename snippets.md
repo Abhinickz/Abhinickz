@@ -1111,3 +1111,106 @@ find ./CDATA -type f | xargs -0 head -1 >> header_first_line.log
 find -type f -iname "*.mp3"
 find ./CDATA -name "*.pl" -exec cygpath -awp {} \;
 ```
+```bash
+#   find: unique file extension in given dir: using perl
+find ./CDATA/ -type f | perl -ne 'print $1 if m/\.([^.\/]+)$/' | sort -u
+```
+```bash
+#   find: multiple files & print only file basenames with perl.
+find ./ -name "*.avi" -o -name "*mp4" -o -name "*.mkv"  | perl -ne 'print $2."\n" if ( $_ =~ m/(.*)\/(.*)/); '
+```
+```bash
+#   find: prints file name type recursively:
+find . -printf '%p\t' -exec file -bi {} \;
+# .	inode/directory; charset=binary
+# ./test.log	text/plain; charset=us-ascii
+# ./test.pl	inode/x-empty; charset=binary
+```
+```bash
+#   find: files with double quotes around it:
+find ./  -type f -printf "\"%p\"\n"
+```
+```bash
+#   find: and display number of lines:
+find . -type f -exec wc -l {} +
+```
+```bash
+#   find: with grep return filename(-H flag) with line number:
+find ./ -type f -exec grep -inH 'ds.test.com' {} \;
+```
+```bash
+#   find: files only in level 1 folder:(search files in current folder only.):
+find ./ -maxdepth 1 -type f
+```
+```bash
+#   find: creates dir based on files name:
+find -maxdepth 1 -type f | sed 's/\.\///g' | sed 's/\..*$//g' |  sed "s/^/'/g" | sed "s/$/'/g" | xargs mkdir
+```
+```bash
+#   find: excluding .git files!
+find ./ -name .git -prune -o -type f -exec grep -inH 'home.html' {} \;
+```
+```bash
+#   find: with Multiple pattern.
+find ./ -type f -name '*.pm' -o -name '*.pl' | grep -v '.svn' | xargs grep -i 'final_session_id\|formid'
+```
+```bash
+#   find: files newer than logindb.txt created time.
+find ./ -type f -newer logindb.txt
+```
+```bash
+#   find: change Permission recursively:
+find ./ -type f -exec chmod 600 {} \;
+```
+```bash
+#   find: recursivley folder wise file count:
+find ./test/ -type d | sort | while read -r dir; do n=$(find "$dir" -type f | wc -l); printf "%4d : %s\n" $n "$dir"; done
+#    2 : ./test/
+```
+```bash
+#   find: get files name only where "purge" is not written: -L: only file name:
+find ./test/ -name "*.pl" -exec grep -il 'CREATE TABLE' {} \; | xargs grep -iL 'purge' > file_not_purge_table.txt
+```
+```bash
+#   find: examples with size
+find . -type 'f' -size +1024k -exec wc -l {} \;
+find . -type 'f' -size +1024k | xargs truncate --size 0
+find . -type 'f' -size +1024k -delete
+```
+```bash
+#    find: excludes file type:xw
+find -name .svn -prune -o \
+ -type f \( -name \*.pm -o -name \*.html -o -name \*.cgi -o -name \*.pl -o -name \*.t -o -name \*.psgi \) \
+ -exec grep "Add\ To\ Cart" {} +
+```
+```bash
+#   find: delete file by node: 15518483
+find . -inum 15518483 -delete
+```
+```bash
+#   bash: list file by inode: 403598
+ls -li
+# 403598 -rw-r--r-- 1 dev dev   5 Oct  2 23:27 test.log
+```
+```bash
+#   tr: andle space:
+cat SELECT_queries_check.txt | tr -s [:space:] [:space:]
+```
+```bash
+#   remove filename headers from file without opening the file.
+sed 's/^1|//g' exceldata.txt > xls_data.txt
+```
+```bash
+#   sed: makes both changes in the single file named file, in-place. Without a backup file
+sed -i -e 's/a/b/g' -e 's/b/d/g' file
+```
+```bash
+#   sed: dir path WINDOWS style.
+echo $(pwd) | sed 's/\//\\/g'
+# \home\abhinickz\test
+```
+```bash
+#   sed: -I - not match binary file:
+#   sed -i '' : The BSD sed command takes the -i option but requires a suffix for the backup (but an empty suffix is permitted).
+grep -I -ril -e '\[% INCLUDE page_elements\/forms\/dbl_submit_token.tt \%]' | xargs sed -i '' 's/\[% INCLUDE page_elements\/forms\/dbl_submit_token.tt \%]//'
+```
