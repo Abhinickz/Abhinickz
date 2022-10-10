@@ -198,3 +198,107 @@ sudo apt -o Acquire::ForceIPv4=true update
 #   bash: apt proxy settings:
 sudo echo 'Acquire::http::Proxy "http://http_ip:8080";' >> /etc/apt/apt.conf
 ```
+```bash
+#   bash: output redirect to file and remove errors from STDERR:
+./abhinickz.t 2> /dev/null 1> abhinickz.log
+```
+```bash
+#   bash: redirect STDERR and STDOUT to file:
+perl test.pl &> test.log
+```
+```bash
+#   bash: redirect STDOUT and STDERR with tee to another file:
+./test.sh 2>&1 | tee -a test.log
+```
+```bash
+#   bash: get contents of binary files:
+strings /usr/local/bin/go
+```
+```bash
+#   bash: create file with given modification time:
+touch -a -m -t 202207130100.09 fileName.ext
+ll fileName.ext
+# -rw-r----- 1 abhinickz abhinickz 0 Jul 13 01:00 fileName.ext
+stat fileName.ext
+#   File: fileName.ext
+#   Size: 0               Blocks: 0          IO Block: 4096   regular empty file
+# Device: 801h/2049d      Inode: 26372       Links: 1
+# Access: (0640/-rw-r-----)  Uid: ( 1000/abhinickz)   Gid: ( 1000/abhinickz)
+# Access: 2022-07-13 01:00:09.000000000 +0530
+# Modify: 2022-07-13 01:00:09.000000000 +0530
+# Change: 2022-07-13 01:46:48.781443006 +0530
+#  Birth: -
+```
+```bash
+#   bash: lftp connect:
+lftp -e 'debug 10;set ftp:passive-mode off; set ftp:auto-passive-mode no; ls; bye;' -u abhinickz,XXXXXX ftp_server_host
+```
+```bash
+#   bash: download file using multi connection: 8 connection at same time:
+aria2c -x8 https://host_name/file
+```
+```bash
+#   bash: follow a pathname until a terminal point is found:
+namei -l test.log
+# f: test.log
+# -rw-r--r-- pi pi test.log
+```
+```bash
+#   bash: solves bind key: CTRL+L clear screen error: old server:
+bind -x '"\C-l": clear;';
+```
+```bash
+#   bash: run everyr -n value, default 2s
+watch "ls -larth"
+# Every 2.0s: ls -larth        dev: Wed Oct  5 21:42:07 2022
+# total 28K
+# drwxr-xr-x  2 pi pi 4.0K Oct  5 20:37 .
+# drwxr-xr-x 37 pi pi 4.0K Oct  5 21:41 ..
+```
+```bash
+#   bash: realtime monitor/do something in realtime.
+# Instead of :, you can use sleep 1 (or 0.2) to ease the CPU.
+# The loop runs until grep finds the string in the commands output. -m 1 means "one match is enough", i.e. grep stops searching after it finds the first match.
+until ps aux | grep -v "auto perl" | grep perl ; do : ; done;
+until ps aux | grep -v "auto perl" | grep -m perl ; do : ; done;
+```
+```bash
+#   bash: turn on grep line buffering mode:
+tail -f file | grep --line-buffered my_pattern
+```
+```bash
+#   bash: list the file contents of package not installed:
+repoquery -l perl
+```
+```bash
+#   bash: check if the package is installed already:
+rpm -qa | grep mule
+```
+```bash
+#   bash: yum: check which package contains given dependency.
+yum whatprovides libmysqlclient.so.15
+```
+```bash
+#   bash: centos: run command with different User and group:
+exec setuidgid mule sg dbusers -c "echo test"
+```
+```bash
+#    bash: kill process by port:
+sudo fuser -k 5000/tcp
+# 5000/tcp:            10731
+# [1]    10731 killed     python3 -m http.server 5000
+```
+```bash
+#    bash: get file full path:
+readlink -f test.log
+# /home/abhinickz/test/test.log
+```
+```bash
+#    bash: create multilevel directory with pattern:
+mkdir -p 2022-0{1,2,3,4,5,6,7,8,9}-{10,15,19,20,21,26,04}
+# 2022-01-04 2022-01-21 2022-02-19 2022-03-10 2022-03-26 2022-04-20 2022-05-15 2022-06-04 2022-06-21 2022-07-19 2022-08-10 2022-08-26 2022-09-20
+# 2022-01-10 2022-01-26 2022-02-20 2022-03-15 2022-04-04 2022-04-21 2022-05-19 2022-06-10 2022-06-26 2022-07-20 2022-08-15 2022-09-04 2022-09-21
+# 2022-01-15 2022-02-04 2022-02-21 2022-03-19 2022-04-10 2022-04-26 2022-05-20 2022-06-15 2022-07-04 2022-07-21 2022-08-19 2022-09-10 2022-09-26
+# 2022-01-19 2022-02-10 2022-02-26 2022-03-20 2022-04-15 2022-05-04 2022-05-21 2022-06-19 2022-07-10 2022-07-26 2022-08-20 2022-09-15
+# 2022-01-20 2022-02-15 2022-03-04 2022-03-21 2022-04-19 2022-05-10 2022-05-26 2022-06-20 2022-07-15 2022-08-04 2022-08-21 2022-09-19
+```
