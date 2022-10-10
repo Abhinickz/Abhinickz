@@ -2159,3 +2159,133 @@ print $perms{$_} . "\n" foreach ( sort { $a <=> $b } values %perms );
     print @big_array;
 }
 ```
+```perl
+# perl: permutation/combinations:
+sub permute {
+    my $last = pop @_;
+    unless (@_) {
+        return map [$_], @$last;
+    }
+    return map { my $left = $_; map [@$left, $_], @$last } permute(@_);
+}
+sub combinations {
+    return [] unless @_;
+    my $first = shift;
+    my @rest = combinations(@_);
+    return @rest, map { [$first, @$_] } @rest;
+}
+print "permute:\n";
+print "[", join(", ", @$_), "]\n" for permute([1,2,3], [4,5,6], [7,8,9]);
+print "combinations:\n";
+print "[", join(", ", @$_), "]\n" for combinations(1..5);
+```
+```perl
+#   perl: get substring:
+my @cache;
+sub sub_string {
+    $_ = shift;
+    return &{$cache[length($_)]} if exists $cache[length($_)];
+    my $sub = 'sub { return (';
+    foreach my $len (1..length($_)-1) {
+        foreach my $off (0..length($_)-$len) {
+            $sub .= "substr(\$_, $off, $len),";
+        }
+    }
+    $sub .= "\$_)};";
+    $cache[length($_)] = eval $sub;
+    return &{$cache[length($_)]};
+}
+```
+```perl
+#   perl: reference: ARRAY of ARRAY reference:
+push @{ $perms->[ $i ] }, ( $permutation );
+```
+```perl
+#   perl: all possible substring of string:
+push @list, $number_input =~ /(?=(.{$_}))/g for 1 .. length $number_input;
+```
+```perl
+#   perl: Inhertiance:
+use base 'MyParent';
+# OR
+use MyParent;
+our @ISA = ('MyParent'); # have to load the modules yourself.
+```
+```perl
+#   perl: export/export_ok
+# @EXPORT: imports all method in your module namespace. use YourModule (); to not.
+# OR
+# @EXPORT_OK: imports all method in your module namespace only if you use YourModule qw(method).
+```
+```perl
+#   perl: dbi mysql dsn:
+my $dbh_obj = DBI->connect('DBI:mysql:database=dev;host=mysql.dummy.com', 'dev', 'PASSWORD', {'RaiseError' => 1, 'PrintError'=> 0});
+```
+```perl
+#   perl: snippet for db values:
+my @source_columns = qw{source_id lastupdate};
+my $source_data    = [
+    {
+        'lastupdate' => '2004-01-11 02:52:23',
+        'source_id'  => '2325',
+    }
+];
+my $insert_values .=
+  join( ', ', map { $source_data->[0]->{$_} } @source_columns );
+# '2325, 2004-01-11 02:52:23'
+```
+```perl
+#    *.tt changes:
+<!-- status_name : [% tt_test.status_name %] -->
+<!-- [% USE Dumper %] -->
+<!-- status_value: [% Dumper.dump(status_value) %] -->
+<!-- status_value : [% status_value.item(tt_test.status_name) %] -->
+# output:
+# status_name : test
+# feature_status_value: $VAR1 = { 'test' => 'test_value' };
+# feature_status_value2 : test_value
+```
+```perl
+#   perl: debugging:
+#!/usr/bin/perl
+use strict; use warnings; use Data::Dumper;
+no warnings "uninitialized";
+my $debug;
+$debug = 0;
+$debug = 1;
+
+$Data::Dumper::Sortkeys = 1;
+$Data::Dumper::Terse = 1; # AVOID VAR1 in dumper
+$Data::Dumper::Deparse  = 1; # Turn subroutine ref back into code.
+$Data::Dumper::Sortkeys = sub {
+    no warnings 'numeric';
+    [ sort { $a <=> $b } keys %{ $_[ 0 ] } ]
+};
+
+my ( $package, $filename, $line ) = caller;
+print STDERR "x" x 125                . "\n";
+print STDERR "PACKAGE: "  . $package  . "\n";
+print STDERR "FILENAME: " . $filename . "\n";
+print STDERR "LINE: "     . $line     . "\n";
+print STDERR "x" x 125                . "\n";
+
+use Term::ANSIColor;
+print color("red"),  Dumper("Stop!"), color("reset");
+print color("blue"), Dumper("Stop!"), color("reset");
+
+# xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+# PACKAGE: main
+# FILENAME: test.pl
+# LINE: 6
+# xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+```perl
+#   perl: POD example:
+__END__
+=pod
+
+=head1 Link : https://www.hackerrank.com/challenges/kangaroo
+
+=cut
+```
+---
