@@ -1820,3 +1820,134 @@ perl -e 'print `date +"%m/%d/%Y"`."\n";'
 #   perl oneliner: handle xargs fila name space problem
 locate -r html$ | perl -lne 'print quotemeta' | xargs grep -i 'find-this' *
 ```
+```bash
+#   perl oneliner: print file
+perl -e 'use strict; use warnings; my $FH; open( $FH, "<", "test.log" ) or die "Error in opening file/n"; while (my $row = <$FH>){ print $row."\n";}' | wc -l
+```
+```bash
+#   perl oneliner: high res time
+perl -MTime::HiRes -le 'print 0+ [ Time::HiRes::stat("/proc/$$") ]->[10]';
+# 1562671719.86202
+```
+```bash
+#    perl oneliner: get high res time interval:
+perl -e 'use Time::HiRes qw(gettimeofday tv_interval); my $time = [gettimeofday]; sleep 1; print "Interval: " . tv_interval($time)."\n";'
+```
+```bash
+#   perl oneliner: fizzbuzz
+perl -e 'use strict; use warnings; use Data::Dumper; print map {$_ % 3 != 0 && $_ % 5 !=0 ? $_."\n" : $_ % 3 == 0 && $_ % 5 == 0 ? "FizzBuzz"."\n": $_ % 3 == 0 ? "Fizz"."\n" : "Buzz"."\n"} 1..100;'
+```
+```bash
+#   perl onliner: handle utf8 data:
+perl -Mutf8 -e 'use open ":std", ":encoding(UTF-8)"; print "🔒\n";'
+# 🔒
+```
+```bash
+#   perl oneliner: convert image to BASE64:
+perl -e 'use MIME::Base64 qw|encode_base64| ; use File::Slurp ; print encode_base64( read_file( $ARGV[0] ) )' test.png
+# OAKOQNwQGK2aL1QeJAe3d5HldXNl+6E/afwFTz57Sf2B96Rhy0F5ds5zUlXaKKuW7pdlH1bI7j07
+# pGpdvby5ZLOuB38qVftrpbaxVGoObNWaw3TdoJvWx6srUXZyBBwBR8ARcAQcARCo3dMoWxMc5Jjo
+# jzLU6LbBPz7zmPx41u9DMZ3xufKnq1rmGu/ER71rdQSSiMAobXuyvvl6ffx24Caxd4lr+v8DeCVA
+# D5VFSQcAAAAASUVORK5CYII=
+```
+---
+```perl
+#   perl: -d (diagnostics/debug) flag
+perl -d test.pl
+# n             # to continue line by line.
+# x $path;      # eval the expr $path;
+```
+```perl
+#   perl: nytprof: use Devel::NYTProf like this:
+perl -d:NYTProf test.pl
+```
+```perl
+#   perl: nytprof with SIGINT stuff: needed for perl catlyst:
+export NYTPROF=sigexit=1:file=nytprof.out;
+perl -dserver_script.pl -p 7000
+```
+```perl
+#   perl: nytprof: create and open html report:
+nytprofhtml --open
+nytprofhtml --open --no-flame # skiping subcalls:
+```
+```perl
+#   perl: compile check:
+perl -MO=Deparse,-si2 test.pl
+```
+```perl
+#   perl: all subroutine with module: Devel::Wherefore
+perl -d:Wherefore test.pl
+# Symbols found in package main after compiling test.pl
+# Dumper  Data::Dumper::Dumper    /usr/lib/x86_64-linux-gnu/perl/5.30/Data/Dumper.pm      604
+# GetOptions      Getopt::Long::GetOptions        /usr/local/share/perl/5.30.0/Getopt/Long.pm     268
+# _get_tile_timeline_data main::_get_tile_timeline_data   test.pl     16
+# capture Capture::Tiny::capture  (eval 257)      1
+```
+```perl
+# perl: regex CJK Unicode char:
+# \p{InCJK_Radicals_Supplement}: U+2E80–U+2EFF
+# \p{InKangxi_Radicals}: U+2F00–U+2FDF
+# \p{InCJK_Symbols_and_Punctuation}: U+3000–U+303F
+# \p{InEnclosed_CJK_Letters_and_Months}: U+3200–U+32FF
+# \p{InHiragana}: U+3040–U+309F
+# \p{InKatakana}: U+30A0–U+30FF
+# \p{InKatakana_Phonetic_Extensions}: U+31F0–U+31FF
+# \p{InCJK_Compatibility}: U+3300–U+33FF
+# \p{InCJK_Unified_Ideographs_Extension_A}: U+3400–U+4DBF
+# \p{InYijing_Hexagram_Symbols}: U+4DC0–U+4DFF
+# \p{InCJK_Unified_Ideographs}: U+4E00–U+9FFF
+# \p{InCJK_Compatibility_Ideographs}: U+F900–U+FAFF
+# \p{InCJK_Compatibility_Forms}: U+FE30–U+FE4F
+# \p{InHangul_Syllables}:  U+AC00–U+D7AF
+```
+```perl
+#   perl: get symbol table:
+my $symbol_table = eval "\\\%${package}::";
+```
+```perl
+#   perl: Fix warning: use of uninitialized value
+$globallines //= 0; # sets it to zero if undef.
+```
+```perl
+#   perl: regex
+^(\2tic|(tac))+$
+# Matches : tactactic
+# Explain: tic can only appear after 2 consecutive tac.
+```
+```perl
+#   perl: getter/setter example:
+sub set {
+    no strict 'refs';
+    my $self = shift;
+    if ( @_ % 2 ) {
+        croak "Odd number of arguments passed to Test";
+    }
+    my ( $sub_name, $value );
+    while (@_) {
+        ( $sub_name, $value ) = ( shift, shift );
+        croak "Missing sub_name in set" if ( !$sub_name );
+        if ( !exists $self->{HASH}->{$sub_name} ) {
+            # Locally scope sub_name, or else function will always return last $sub_name
+            my $_name = $sub_name;
+            *{$_name} = sub {
+                $_[0]->get($_name);
+            };
+        }
+        $self->{HASH}->{$sub_name} = $value;
+    }
+    return $value;
+}
+sub get {
+    my $self = shift;
+    my ( $obj, $value ) =
+        ( exists $self->{HASH}->{ $_[0] } )
+      ? ( $self, $self->{HASH}->{ $_[0] } )
+      : ( undef, undef );
+    # return default, if not found:
+    return $_[1] if ( !$obj );
+    # call it and return the result, If method:
+    return &$value( $self, @_ ) if ( ref $value eq "CODE" );
+    return $value;
+}
+```
