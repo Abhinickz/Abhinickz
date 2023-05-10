@@ -91,6 +91,7 @@ prompt_context() {
   if [[ "$USERNAME" != "$DEFAULT_USER" || -n "$SSH_CLIENT" ]]; then
     # prompt_segment black default "%(!.%{%F{yellow}%}.)%n@%m"
     # prompt_segment black default "%(!.%{%F{yellow}%}.)%D{%y-%m-%f}|%D{%L:%M:%S}"
+    #prompt_segment white white "%B[%(!.%{%F{yellow}%}.)%D{%L:%M:%S}]%b" => " [3:32:14]  test  ll"
     prompt_segment white red "%(!.%{%F{yellow}%}.)%D{%L:%M:%S}"
   fi
 }
