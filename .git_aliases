@@ -1,86 +1,230 @@
 #########################################################################################################################################
-alias gdiff='git diff'
-alias gcl='git clone'
+# Add changes to the index
 alias ga='git add'
-alias grm='git rm'
-alias gap='git add -p'
+
+# Add all changes including untracked files
 alias gall='git add -A'
+
+# Add changes interactively (patch mode)
+alias gap='git add -p'
+
+# Remove tracked files from the working tree and index
+alias grm='git rm'
+
+# Fetch from all remotes and remove deleted refs
 alias gf='git fetch --all --prune'
+
+# Fetch all remotes and tags
 alias gft='git fetch --all --prune --tags'
+
+# Fetch all with verbose output
 alias gfv='git fetch --all --prune --verbose'
+
+# Fetch all with tags and verbose output
 alias gftv='git fetch --all --prune --tags --verbose'
+
+# Reset index to HEAD (unstage)
 alias gus='git reset HEAD'
+
+# Reset and remove all untracked files (dangerous)
 alias gpristine='git reset --hard && git clean -dfx'
+
+# Clean untracked files and directories
 alias gclean='git clean -fd'
-alias gm="git merge"
+
+# Merge a branch into current branch
+alias gm='git merge'
+
+# Move or rename a file in the repo
 alias gmv='git mv'
+
+# Shortcut for git command
 alias g='git'
+
+# Alternate shortcut for git command
 alias get='git'
+
+# Show working tree status
 alias gst='git status'
+
+# Show status excluding untracked files
 alias gs='git status -uno'
+
+# Show status in short format
 alias gss='git status -s'
+
+# Initialize and update submodules recursively
 alias gsu='git submodule update --init --recursive'
+
+# Pull latest changes
 alias gl='git pull'
+
+# Pull from upstream/master
 alias glum='git pull upstream master'
+
+# Pull with rebase
 alias gpr='git pull --rebase'
+
+# Pull then push (safe only when no conflicts expected)
 alias gpp='git pull && git push'
+
+# Fetch then rebase current branch
 alias gup='git fetch && git rebase'
+
+# Push to default remote
 alias gp='git push'
+
+# Push to origin
 alias gpo='git push origin'
+
+# Push and set upstream
 alias gpu='git push --set-upstream'
+
+# Push and set upstream to origin
 alias gpuo='git push --set-upstream origin'
+
+# Push to origin master
 alias gpom='git push origin master'
+
+# Show remotes
 alias gr='git remote'
+
+# Show remotes with URLs
 alias grv='git remote -v'
+
+# Add a new remote
 alias gra='git remote add'
+
+# Show diff
 alias gd='git diff'
+
+# Show diff with minimal context
 alias gdf='git diff -U0'
+
+# Show diff of staged changes
 alias gdc='git diff --cached'
+
+# Show staged diff with minimal context
 alias gdfc='git diff --cached -U0'
+
+# View whitespace-insensitive diff in Vim
 alias gdv='git diff -w "$@" | vim -R -'
+
+# Commit with verbose output
 alias gc='git commit -v'
+
+# Commit all staged and unstaged changes
 alias gca='git commit -v -a'
+
+# Commit with message
 alias gcm='git commit -v -m'
-alias gcam="git commit -v -am"
+
+# Commit all with message
+alias gcam='git commit -v -am'
+
+# Interactive commit
 alias gci='git commit --interactive'
+
+# Show branches
 alias gb='git branch'
+
+# Show all branches
 alias gba='git branch -a'
+
+# Create tracking branch
 alias gbt='git branch --track'
+
+# Rename branch
 alias gbm='git branch -m'
+
+# Delete branch
 alias gbd='git branch -d'
+
+# Force delete branch
 alias gbD='git branch -D'
+
+# Show commit counts by author
 alias gcount='git shortlog -sn'
+
+# Cherry-pick a commit
 alias gcp='git cherry-pick'
+
+# Checkout a branch or file
 alias gco='git checkout'
+
+# Checkout master
 alias gcom='git checkout master'
+
+# Create and checkout new branch
 alias gcb='git checkout -b'
+
+# Alternate: Create and checkout new branch
 alias gcob='git checkout -b'
+
+# Checkout tracking remote branch
 alias gct='git checkout --track'
+
+# Export current tree to zip
 alias gexport='git archive --format zip --output'
+
+# Force delete branch
 alias gdel='git branch -D'
+
+# Update from origin and upstream, then merge upstream/master
 alias gmu='git fetch origin -v; git fetch upstream -v; git merge upstream/master'
+
+# Compact log with graph and abbrev
 alias gll='git log --graph --pretty=oneline --abbrev-commit'
+
+# Colorful, detailed git log graph
 alias gg="git log --graph --pretty=format:'%C(bold)%h%Creset%C(magenta)%d%Creset %s %C(yellow)<%an> %C(cyan)(%cr)%Creset' --abbrev-commit --date=relative"
-alias ggs="gg --stat"
-alias gsl="git shortlog -sn"
-alias gwc="git whatchanged"
-alias gt="git tag"
-alias gta="git tag -a"
-alias gtd="git tag -d"
-alias gtl="git tag -l"
-# From http://blogs.atlassian.com/2014/10/advanced-git-aliases/
+
+# Log graph with stats
+alias ggs='gg --stat'
+
+# Show commits per contributor
+alias gsl='git shortlog -sn'
+
+# Show changes history
+alias gwc='git whatchanged'
+
+# List tags
+alias gt='git tag'
+
+# Create annotated tag
+alias gta='git tag -a'
+
+# Delete tag
+alias gtd='git tag -d'
+
+# List all tags
+alias gtl='git tag -l'
+
 # Show commits since last pull
-alias gnew="git log HEAD@{1}..HEAD@{0}"
-# Add uncommitted and unstaged changes to the last commit
-alias gcaa="git commit -a --amend -C HEAD"
-alias ggui="git gui"
-alias gcsam="git commit -S -am"
-alias gstd="git stash drop"
-alias gstl="git stash list"
+alias gnew='git log HEAD@{1}..HEAD@{0}'
+
+# Amend last commit with current changes
+alias gcaa='git commit -a --amend -C HEAD'
+
+# Open Git GUI
+alias ggui='git gui'
+
+# Sign and commit all
+alias gcsam='git commit -S -am'
+
+# Drop most recent stash
+alias gstd='git stash drop'
+
+# List all stashes
+alias gstl='git stash list'
+
+# Jump to root of repository
 alias gh='cd "$(git rev-parse --show-toplevel)"'
-# Show untracked files
+
+# List untracked files
 alias gu='git ls-files . --exclude-standard --others'
 
+# Show tags sorted semantically (Darwin-specific)
 case $OSTYPE in
   darwin*)
     alias gtls="git tag -l | gsort -V"
